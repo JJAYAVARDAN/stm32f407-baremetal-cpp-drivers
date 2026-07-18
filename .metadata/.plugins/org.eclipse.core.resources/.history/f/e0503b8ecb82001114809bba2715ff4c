@@ -139,8 +139,8 @@ void GPIO::setAlternateFunction(uint8_t Af)
 	else
 	{
 		uint8_t pin = mpin - 8;
-		mport -> AFRH &= ~(0xFU << (pin * 4));
-		mport -> AFRH |= ((uint32_t)Af << (pin * 4));
+		mport -> AFRL &= ~(0xFU << (pin * 4));
+		mport -> AFRL |= ((uint32_t)Af << (pin * 4));
 	}
 }
 /*********************************************************************
