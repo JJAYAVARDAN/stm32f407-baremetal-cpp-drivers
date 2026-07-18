@@ -1,0 +1,7 @@
+#include<cstdint>
+
+int main()
+{
+	for(;;);
+	return 0;
+}

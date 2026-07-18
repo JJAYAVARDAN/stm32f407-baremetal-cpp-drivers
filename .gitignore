@@ -1,16 +1,21 @@
-# STM32CubeIDE
+# Build directories
 Debug/
 Release/
 
-# Build files
+# STM32CubeIDE / Eclipse
+.settings/
+
+# Build artifacts
 *.o
 *.d
 *.su
+*.cyclo
+*.elf
+*.map
+*.list
+*.bin
+*.hex
 
-# Eclipse
-.settings/
-.metadata/
-
-# OS
+# OS files
 .DS_Store
 Thumbs.db

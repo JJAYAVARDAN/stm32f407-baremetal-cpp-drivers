@@ -1,0 +1,10 @@
+22:20:55 **** Incremental Build of configuration Debug for project Pheripheral_config ****
+make -j16 all 
+arm-none-eabi-size  Pheripheral_config.elf 
+   text	   data	    bss	    dec	    hex	filename
+    696	      0	   1568	   2264	    8d8	Pheripheral_config.elf
+Finished building: default.size.stdout
+ 
+
+22:20:55 Build Finished. 0 errors, 0 warnings. (took 154ms)
+

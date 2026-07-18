@@ -1,0 +1,21 @@
+22:13:04 **** Incremental Build of configuration Debug for project Drivers ****
+make -j16 all 
+arm-none-eabi-g++ "../Applications/Led_blink/main.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DSTM32 -DSTM32F407G_DISC1 -DSTM32F4 -DSTM32F407VGTx -c -I../Inc -I"E:/STM32F407VG_DRIVER DEVELEPMENT/Drivers/Inc" -I"E:/STM32F407VG_DRIVER DEVELEPMENT/Drivers/Drivers/Inc" -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Applications/Led_blink/main.d" -MT"Applications/Led_blink/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Applications/Led_blink/main.o"
+arm-none-eabi-g++ -o "Drivers.elf" @"objects.list"   -mcpu=cortex-m4 -T"E:\STM32F407VG_DRIVER DEVELEPMENT\Drivers\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: Drivers.elf
+ 
+arm-none-eabi-size  Drivers.elf 
+arm-none-eabi-objdump -h -S Drivers.elf  > "Drivers.list"
+   text	   data	    bss	    dec	    hex	filename
+   1292	      0	   1568	   2860	    b2c	Drivers.elf
+Finished building: default.size.stdout
+ 
+Finished building: Drivers.list
+ 
+22:13:10 **** Incremental Build of configuration Debug for project Drivers ****
+make -j16 all 
+arm-none-eabi-size  Drivers.elf 
+   text	   data	    bss	    dec	    hex	filename
+   1292	      0	   1568	   2860	    b2c	Drivers.elf
+Finished building: default.size.stdout
+ 
