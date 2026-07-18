@@ -29,11 +29,4 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>Drivers/Src/Gpio_driver.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Pheripherel_Driver/Src/Gpio_driver.cpp</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>
