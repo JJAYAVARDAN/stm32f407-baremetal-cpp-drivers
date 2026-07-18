@@ -19,3 +19,10 @@ Release/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates

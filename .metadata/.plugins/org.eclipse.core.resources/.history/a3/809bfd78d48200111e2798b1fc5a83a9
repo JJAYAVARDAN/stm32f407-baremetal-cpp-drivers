@@ -22,35 +22,35 @@ GPIO::GPIO(Gpio_RegDef_t* port, uint8_t pin)
 	 */
 	if (port == GPIOA)
 	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTA);
+		mRCC.EnableGPIOClock(RCC_GPIO::PORTA);
 	}
 	else if (port == GPIOB)
 	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTB);
+		mRCC.EnableGPIOClock(RCC_GPIO::PORTB);
 	}
-	else if (port == GPIOC)
+	elseif (port == GPIOC)
 	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTC);
+		mRCC.EnableGPIOClock(RCC_GPIO::PORTC);
 	}
 	else if (port == GPIOD)
 	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTD);
+		mRCC.EnableGPIOClock(RCC_GPIO::PORTD);
 	}
 	else if (port == GPIOE)
 	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTE);
+		mRCC.EnableGPIOClock(RCC_GPIO::PORTE);
 	}
 	else if (port == GPIOF)
 	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTF);
+		mRCC.EnableGPIOClock(RCC_GPIO::PORTF);
 	}
 	else if (port == GPIOG)
 	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTG);
+		mRCC.EnableGPIOClock(RCC_GPIO::PORTG);
 	}
 	else if (port == GPIOH)
 	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTH);
+		mRCC.EnableGPIOClock(RCC_GPIO::PORTH);
 	}
 }
 

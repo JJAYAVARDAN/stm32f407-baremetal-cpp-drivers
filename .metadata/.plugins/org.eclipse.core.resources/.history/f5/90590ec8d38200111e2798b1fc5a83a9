@@ -9,6 +9,7 @@
 #define GPIO_DRIVER_H_
 
 #include <cstdint>
+#include "RCC_Driver.h"	// Include RCC driver for clock management
 
 #define _IO volatile
 
@@ -114,6 +115,7 @@ class GPIO{
 private:
 	Gpio_RegDef_t *mport;
 	uint8_t mpin;
+	RCC mRCC; // Instance of RCC class to manage clock
 public:
 	GPIO(Gpio_RegDef_t *port,uint8_t pin);
 	void setMode(GPIO_Mode mode);
@@ -123,6 +125,12 @@ public:
 	void write(GPIO_State state);
 	GPIO_State read();
 	void toggle();
+	void setAlternateFunction(uint8_t Af);
+	void lock();
+	void write_port(uint16_t value);
+	uint16_t readport();
+
+	void deInit();
 };
 
 

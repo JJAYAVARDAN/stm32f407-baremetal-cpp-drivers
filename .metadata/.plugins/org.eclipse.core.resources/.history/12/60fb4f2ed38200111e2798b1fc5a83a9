@@ -1,0 +1,64 @@
+/*
+ * RCC_Driver.cpp
+ *
+ *  Created on: 18-Jul-2026
+ *      Author: jolap
+ */
+#include "RCC_Driver.h"
+
+ /********************************************************************
+  *                      Constrcutor
+  *********************************************************************/
+RCC::RCC()
+{
+	// Constructor implementation
+	RCCx = RCC;
+}
+/*********************************************************************
+ *                      Enable GPIO Clock
+ *
+ * RCC_AHB1ENR
+ *
+ * Bit 0  GPIOAEN
+ * Bit 1  GPIOBEN
+ * Bit 2  GPIOCEN
+ * ...
+ *
+ *********************************************************************/
+
+void RCC::EnableGPIOClock(RCC_GPIO port)
+{
+	RCCx->RCC_AHB1ENR |= (1U << static_cast<uint32_t>(port));
+}
+
+/*********************************************************************
+ *                      Disable GPIO Clock
+ *
+ * RCC_AHB1ENR
+ *
+ * Bit 0  GPIOAEN
+ * Bit 1  GPIOBEN
+ * Bit 2  GPIOCEN
+ * ...
+ *
+ *********************************************************************/
+void RCC::DisableGPIOClock(RCC_GPIO port)
+{
+	RCCx->RCC_AHB1ENR &= ~(1U << static_cast<uint32_t>(port));
+}
+/*********************************************************************
+ *                      Reset GPIO Peripheral
+ *
+ * AHB1RSTR
+ *
+ *********************************************************************/
+
+void RCC::ResetGPIO(RCC_GPIO port)
+{
+	RCCx->RCC_AHB1RSTR |= (1U << static_cast<uint32_t>(port));
+	/*
+	 * Small delay
+	 * Allow reset pulse to complete
+	 */
+	RCCx->RCC_AHB1RSTR &= ~(1U << static_cast<uint32_t>(port));
+}
