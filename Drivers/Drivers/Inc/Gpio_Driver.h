@@ -9,13 +9,14 @@
 #define GPIO_DRIVER_H_
 
 #include <cstdint>
+#include "RCC_Driver.h"	// Include RCC driver for clock management
 
 #define _IO volatile
 
 /*********************************************************************
  *                      Base Address Definitions
  *********************************************************************/
-#define RCC_BASE 0x40023800U
+//#define RCC_BASE 0x40023800U
 
 #define GPIOA_BASE 0x40020000UL
 #define GPIOB_BASE 0x40020400UL
@@ -32,7 +33,7 @@
 /*********************************************************************
  *                      RCC Register Definitions
  *********************************************************************/
-#define RCC_AHB1ENR     (*(volatile uint32_t *)(RCC_BASE + 0x30))
+//#define RCC_AHB1ENR     (*(volatile uint32_t *)(RCC_BASE + 0x30))
 
 
 /*********************************************************************
@@ -114,6 +115,7 @@ class GPIO{
 private:
 	Gpio_RegDef_t *mport;
 	uint8_t mpin;
+	RCC mRCC; // Instance of RCC class to manage clock
 public:
 	GPIO(Gpio_RegDef_t *port,uint8_t pin);
 	void setMode(GPIO_Mode mode);
