@@ -1,0 +1,93 @@
+@startuml GPIO_Class
+
+title GPIO Driver Class Diagram
+
+enum GPIO_Mode {
+    INPUT
+    OUTPUT
+    ALTERNATE
+    ANALOG
+}
+
+enum GPIO_State {
+    LOW
+    HIGH
+}
+
+enum GPIO_OutputType {
+    PUSH_PULL
+    OPEN_DRAIN
+}
+
+enum GPIO_Pull {
+    NO_PULL
+    PULL_UP
+    PULL_DOWN
+}
+
+enum GPIO_Speed {
+    LOW
+    MEDIUM
+    FAST
+    HIGH
+}
+
+class GPIO
+{
+    - mport : GPIO_RegDef_t*
+    - mpin : uint8_t
+
+    + GPIO(port,pin)
+
+    + setMode()
+
+    + setOutputType()
+
+    + setPull()
+
+    + setSpeed()
+
+    + setAlternateFunction()
+
+    + write()
+
+    + read()
+
+    + toggle()
+
+    + lock()
+
+}
+
+class GPIO_RegDef_t
+{
+    MODER
+
+    OTYPER
+
+    OSPEEDR
+
+    PUPDR
+
+    IDR
+
+    ODR
+
+    BSRR
+
+    LCKR
+
+    AFRL
+
+    AFRH
+}
+
+GPIO --> GPIO_RegDef_t
+
+GPIO --> GPIO_Mode
+GPIO --> GPIO_State
+GPIO --> GPIO_OutputType
+GPIO --> GPIO_Pull
+GPIO --> GPIO_Speed
+
+@enduml
