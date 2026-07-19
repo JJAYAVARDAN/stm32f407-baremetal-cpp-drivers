@@ -162,44 +162,45 @@ void RCC::disableUSARTClock(RCC_USART usart)
     }
 }
 /*********************************************************************
- *                  Enable SPI Clock
+ *                  Enable I2C Clock
  *********************************************************************/
 
-void RCC::enableSPIClock(RCC_SPI spi)
+void RCC::enableI2CClock(RCC_I2C i2c)
 {
-    switch (spi)
+    switch(i2c)
     {
-        case RCC_SPI::SPI1:
-            mRcc->RCC_APB2ENR |= (1U << 12);
+        case RCC_I2C::I2C1:
+            mRcc->RCC_APB1ENR |= (1U << 21);
             break;
 
-        case RCC_SPI::SPI2:
-            mRcc->RCC_APB1ENR |= (1U << 14);
+        case RCC_I2C::I2C2:
+            mRcc->RCC_APB1ENR |= (1U << 22);
             break;
 
-        case RCC_SPI::SPI3:
-            mRcc->RCC_APB1ENR |= (1U << 15);
+        case RCC_I2C::I2C3:
+            mRcc->RCC_APB1ENR |= (1U << 23);
             break;
     }
 }
+
 /*********************************************************************
- *                  Disable SPI Clock
+ *                  Disable I2C Clock
  *********************************************************************/
 
-void RCC::disableSPIClock(RCC_SPI spi)
+void RCC::disableI2CClock(RCC_I2C i2c)
 {
-    switch (spi)
+    switch(i2c)
     {
-        case RCC_SPI::SPI1:
-            mRcc->RCC_APB2ENR &= ~(1U << 12);
+        case RCC_I2C::I2C1:
+            mRcc->RCC_APB1ENR &= ~(1U << 21);
             break;
 
-        case RCC_SPI::SPI2:
-            mRcc->RCC_APB1ENR &= ~(1U << 14);
+        case RCC_I2C::I2C2:
+            mRcc->RCC_APB1ENR &= ~(1U << 22);
             break;
 
-        case RCC_SPI::SPI3:
-            mRcc->RCC_APB1ENR &= ~(1U << 15);
+        case RCC_I2C::I2C3:
+            mRcc->RCC_APB1ENR &= ~(1U << 23);
             break;
     }
 }
