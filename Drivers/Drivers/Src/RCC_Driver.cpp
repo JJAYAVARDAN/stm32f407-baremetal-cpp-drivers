@@ -161,3 +161,45 @@ void RCC::disableUSARTClock(RCC_USART usart)
             break;
     }
 }
+/*********************************************************************
+ *                  Enable SPI Clock
+ *********************************************************************/
+
+void RCC::enableSPIClock(RCC_SPI spi)
+{
+    switch (spi)
+    {
+        case RCC_SPI::SPI1:
+            mRcc->RCC_APB2ENR |= (1U << 12);
+            break;
+
+        case RCC_SPI::SPI2:
+            mRcc->RCC_APB1ENR |= (1U << 14);
+            break;
+
+        case RCC_SPI::SPI3:
+            mRcc->RCC_APB1ENR |= (1U << 15);
+            break;
+    }
+}
+/*********************************************************************
+ *                  Disable SPI Clock
+ *********************************************************************/
+
+void RCC::disableSPIClock(RCC_SPI spi)
+{
+    switch (spi)
+    {
+        case RCC_SPI::SPI1:
+            mRcc->RCC_APB2ENR &= ~(1U << 12);
+            break;
+
+        case RCC_SPI::SPI2:
+            mRcc->RCC_APB1ENR &= ~(1U << 14);
+            break;
+
+        case RCC_SPI::SPI3:
+            mRcc->RCC_APB1ENR &= ~(1U << 15);
+            break;
+    }
+}

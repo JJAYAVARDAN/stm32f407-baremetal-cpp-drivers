@@ -2,6 +2,8 @@
 
 > Production-quality bare-metal C++ peripheral driver library for the STM32F407VG Discovery board using direct register programming. Built from scratch without STM32 HAL or LL libraries.
 
+**Current version: v0.6.0**
+
 ---
 
 # Project Overview
@@ -46,11 +48,12 @@ The objective of this project is to understand the STM32F4 architecture at the r
 
 | Peripheral | Status |
 |------------|--------|
-| GPIO | 🚧 In Progress |
-| RCC | ⏳ Planned |
-| EXTI | ⏳ Planned |
-| SysTick | ⏳ Planned |
-| USART | ⏳ Planned |
+| GPIO | ✅ Implemented |
+| RCC | ✅ Implemented |
+| EXTI | ✅ Implemented |
+| NVIC | ✅ Implemented |
+| SysTick | ✅ Implemented |
+| USART | ✅ Implemented |
 | SPI | ⏳ Planned |
 | I2C | ⏳ Planned |
 | CAN | ⏳ Planned |
@@ -68,30 +71,24 @@ The objective of this project is to understand the STM32F4 architecture at the r
 stm32f407-baremetal-cpp-drivers
 │
 ├── Drivers
-│   ├── Inc
-│   └── Src
-│
-├── Applications
+│   ├── Drivers
+│   │   ├── Inc     → GPIO, RCC, EXTI, NVIC, SysTick, USART headers
+│   │   └── Src     → GPIO, RCC, EXTI, NVIC, SysTick, USART sources
+│   ├── Applications → example apps (LED blink, button+EXTI, USART loopback, etc.)
+│   ├── Src         → main.cpp (placeholder entry point)
+│   ├── Startup     → startup_stm32f407vgtx.s (vector table)
+│   ├── STM32F407VGTX_FLASH.ld
+│   └── STM32F407VGTX_RAM.ld
 │
 ├── Docs
-│   ├── GPIO.md
-│   ├── RCC.md
-│   ├── USART.md
-│   ├── SPI.md
-│   ├── I2C.md
-│   ├── CAN.md
-│   └── PUML
-│
-├── Images
-│
-├── Startup
-│
-├── Linker
+│   └── puml        → GPIO class diagram, project architecture diagram
 │
 ├── README.md
 │
 └── LICENSE
 ```
+
+> **Note:** `Drivers/Applications/` contains several standalone example files that each define `main()` (`main.cpp`, `main2.cpp`, `main_systick.cpp`, `Button_EXTI.cpp`, `Button_Nvic.cpp`, `Usart_loopback.cpp`). These are meant to be swapped in one at a time to demonstrate a specific driver/feature. Only the active example should be included in the build — the rest are intentionally excluded from build (CubeIDE: right-click → Resource Configurations → Exclude from Build) to avoid `multiple definition of main`.
 
 ---
 
@@ -110,11 +107,15 @@ Each peripheral contains
 
 # PlantUML Diagrams
 
-The `Docs/PUML` directory contains architecture and design diagrams.
+The `Docs/puml` directory contains architecture and design diagrams.
 
 Current diagrams:
 
 - GPIO Driver Class Diagram
+- Complete Project Architecture
+
+Planned:
+
 - GPIO Initialization Flow
 - RCC Clock Tree
 - EXTI Interrupt Flow
@@ -123,7 +124,6 @@ Current diagrams:
 - I2C State Machine
 - CAN Message Flow
 - Driver Layer Architecture
-- Complete Project Architecture
 
 ---
 
@@ -131,14 +131,15 @@ Current diagrams:
 
 ## Phase 1
 
-- [ ] GPIO
-- [ ] RCC
-- [ ] SysTick
+- [x] GPIO
+- [x] RCC
+- [x] SysTick
 
 ## Phase 2
 
-- [ ] EXTI
-- [ ] USART
+- [x] EXTI
+- [x] NVIC
+- [x] USART
 - [ ] SPI
 
 ## Phase 3
@@ -169,7 +170,7 @@ Current diagrams:
 # Example
 
 ```cpp
-GPIO led(GPIOD,12);
+GPIO led(GPIO_Port::PORTD, 12);
 
 led.setMode(GPIO_Mode::OUTPUT);
 
@@ -178,6 +179,17 @@ while(true)
     led.toggle();
 }
 ```
+
+---
+
+# Known Issues (v0.6.0)
+
+- ~~`USART_Driver.h` had a misplaced `#endif` that left most of the header outside the include guard.~~ **Fixed.**
+- ~~GPIO constructor calls in example apps passed the `GPIOx` register-pointer macro instead of `GPIO_Port::PORTx`.~~ **Fixed.**
+- `EXTI::setTrigger()` is declared in the header but not implemented; use `configureTrigger()` instead.
+- `SysTick::delayMs()` assumes a 1 kHz tick rate; timing will be wrong if `init()` is called with a different `tickFreq`.
+- `SysTick::delayUs()` is a stub (TODO).
+- `USART::transmit()` intentionally skips the TC (transmission-complete) wait — fine for back-to-back polling, not yet documented inline.
 
 ---
 
