@@ -70,14 +70,24 @@ typedef struct{
 #define GPIOJ ((Gpio_RegDef_t *)(GPIOJ_BASE))
 #define GPIOK ((Gpio_RegDef_t *)(GPIOK_BASE))
 
-/*********************************************************************
- *                      GPIO Enumerations
- *********************************************************************/
+enum class GPIO_Port
+{
+	PORTA = 0,
+	PORTB,
+	PORTC,
+	PORTD,
+	PORTE,
+	PORTF,
+	PORTG,
+	PORTH,
+	PORTI
+};
+
 enum class GPIO_Mode
 {
     INPUT = 0,
     OUTPUT,
-    ALTERNATE,
+    ALTERNATE_FUNCTION,
     ANALOG
 };
 
@@ -99,7 +109,7 @@ enum class GPIO_Speed
     LOW = 0,
     MEDIUM,
     FAST,
-    HIGH
+    VERY_HIGH
 };
 
 enum class GPIO_State
@@ -114,10 +124,12 @@ enum class GPIO_State
 class GPIO{
 private:
 	Gpio_RegDef_t *mport;
+	GPIO_Port mPortId;
 	uint8_t mpin;
 	RCC mRCC; // Instance of RCC class to manage clock
 public:
-	GPIO(Gpio_RegDef_t *port,uint8_t pin);
+	GPIO(GPIO_Port port,uint8_t pin);
+	void clockEnable();
 	void setMode(GPIO_Mode mode);
 	void setOutputType(GPIO_OutputType type);
 	void setSpeed(GPIO_Speed speed);
@@ -131,31 +143,6 @@ public:
 	uint16_t readport();
 
 	void deInit();
-};
-/*enum class GPIO_Port
-{
-    PORTA = 0,
-    PORTB,
-    PORTC,
-    PORTD,
-    PORTE,
-    PORTF,
-    PORTG,
-    PORTH,
-    PORTI
-};*/
-
-enum class GPIO_Port
-{
-	PORTA = 0,
-	PORTB,
-	PORTC,
-	PORTD,
-	PORTE,
-	PORTF,
-	PORTG,
-	PORTH,
-	PORTI
 };
 
 

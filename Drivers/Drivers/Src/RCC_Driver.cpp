@@ -96,3 +96,68 @@ void RCC::resetGPIO(RCC_GPIO port)
 		~(1U << static_cast<uint32_t>(port));
 
 }
+/*********************************************************************
+ *                  Enable USART Clock
+ *********************************************************************/
+void RCC::enableUSARTClock(RCC_USART usart)
+{
+    switch (usart)
+    {
+        case RCC_USART::USART1:
+            mRcc->RCC_APB2ENR |= (1U << 4);
+            break;
+
+        case RCC_USART::USART2:
+            mRcc->RCC_APB1ENR |= (1U << 17);
+            break;
+
+        case RCC_USART::USART3:
+            mRcc->RCC_APB1ENR |= (1U << 18);
+            break;
+
+        case RCC_USART::UART4:
+            mRcc->RCC_APB1ENR |= (1U << 19);
+            break;
+
+        case RCC_USART::UART5:
+            mRcc->RCC_APB1ENR |= (1U << 20);
+            break;
+
+        case RCC_USART::USART6:
+            mRcc->RCC_APB2ENR |= (1U << 5);
+            break;
+    }
+}
+
+/*********************************************************************
+ *                  Disable USART Clock
+ *********************************************************************/
+void RCC::disableUSARTClock(RCC_USART usart)
+{
+    switch (usart)
+    {
+        case RCC_USART::USART1:
+            mRcc->RCC_APB2ENR &= ~(1U << 4);
+            break;
+
+        case RCC_USART::USART2:
+            mRcc->RCC_APB1ENR &= ~(1U << 17);
+            break;
+
+        case RCC_USART::USART3:
+            mRcc->RCC_APB1ENR &= ~(1U << 18);
+            break;
+
+        case RCC_USART::UART4:
+            mRcc->RCC_APB1ENR &= ~(1U << 19);
+            break;
+
+        case RCC_USART::UART5:
+            mRcc->RCC_APB1ENR &= ~(1U << 20);
+            break;
+
+        case RCC_USART::USART6:
+            mRcc->RCC_APB2ENR &= ~(1U << 5);
+            break;
+    }
+}
