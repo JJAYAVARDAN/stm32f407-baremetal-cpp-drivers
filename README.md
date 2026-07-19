@@ -54,7 +54,7 @@ The objective of this project is to understand the STM32F4 architecture at the r
 | NVIC | ✅ Implemented |
 | SysTick | ✅ Implemented |
 | USART | ✅ Implemented |
-| SPI | ⏳ Planned |
+| SPI | ✅ Implemented |
 | I2C | ⏳ Planned |
 | CAN | ⏳ Planned |
 | TIM | ⏳ Planned |
