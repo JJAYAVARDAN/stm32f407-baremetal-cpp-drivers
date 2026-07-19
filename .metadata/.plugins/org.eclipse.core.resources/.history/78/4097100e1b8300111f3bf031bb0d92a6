@@ -1,0 +1,13 @@
+/*
+ * EXTI_Driver.h
+ *
+ *  Created on: 19-Jul-2026
+ *      Author: jolap
+ */
+
+#ifndef EXTI_DRIVER_H_
+#define EXTI_DRIVER_H_
+
+
+
+#endif /* EXTI_DRIVER_H_ */

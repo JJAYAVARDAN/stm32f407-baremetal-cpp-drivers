@@ -1,0 +1,36 @@
+#include "Gpio_Driver.h"
+#include "SysTick_Driver.h"
+#include "EXTI_Driver.h"
+
+int main()
+{
+    /* Initialize SysTick */
+    SysTick sysTick;
+    sysTick.init(1000);
+
+    /* Configure LED */
+    GPIO led(GPIOD, 12);
+
+    led.setMode(GPIO_Mode::OUTPUT);
+    led.setOutputType(GPIO_OutputType::PUSH_PULL);
+    led.setSpeed(GPIO_Speed::HIGH);
+    led.setPull(GPIO_Pull::NO_PULL);
+
+    /* Configure EXTI */
+    EXTI exti(GPIO_Port::PORTA, 0);
+
+    exti.enableInterrupt();
+
+    while (1)
+    {
+        exti.softwareInterrupt();
+
+        if (exti.isPending())
+        {
+            led.toggle();
+            exti.clearPending();
+        }
+
+        sysTick.delayMs(500);
+    }
+}
