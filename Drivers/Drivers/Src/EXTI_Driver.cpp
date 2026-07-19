@@ -30,6 +30,11 @@ void EXTI::SYSCFGClock()
 	RCCx->RCC_APB2ENR |= RCC_APB2ENR_SYSCFGEN; // Set bit 14 to enable SYSCFG clock
 
 }
+
+void EXTI::configureEXTILine()
+{
+	ConfigureEXTI();
+}
 /*********************************************************************
  *                  Configure EXTI Source
  *********************************************************************/
