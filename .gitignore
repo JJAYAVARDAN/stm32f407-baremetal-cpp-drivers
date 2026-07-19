@@ -26,3 +26,6 @@ Thumbs.db
 *.user
 *.userosscache
 *.sln.docstates
+
+# STM32CubeIDE Workspace
+.metadata/
