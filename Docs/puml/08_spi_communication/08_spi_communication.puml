@@ -1,0 +1,46 @@
+@startuml SPI_Communication
+title SPI Driver — Polling-Based Communication Flow
+' NOTE: modeled on the same conventions as the reviewed GPIO/USART
+' drivers (RCC-owning constructor, enum-class config, polling I/O).
+' Verify method names against the actual SPI_Driver.h/.cpp before publishing.
+
+skinparam backgroundColor #FEFEFE
+skinparam sequence {
+    ArrowColor #2C7FB8
+    LifeLineBorderColor #2C7FB8
+    ParticipantBackgroundColor #F5FAFF
+    ParticipantBorderColor #2C7FB8
+}
+
+actor Application
+participant "SPI" as SPI
+participant "RCC_Driver" as RCC
+participant "GPIO (SCK/MOSI/MISO/NSS)" as GPIO
+participant "SPI_CR1/CR2/SR/DR" as REG
+
+Application -> SPI : SPI(SPI_Instance instance)
+SPI -> RCC : enableAPB2Clock(SPIx)\n(or APB1 for SPI2/3)
+SPI -> GPIO : configure pins as\nAlternate Function
+SPI -> REG : set CR1\n(mode, CPOL, CPHA, baud prescaler, MSTR)
+SPI -> REG : CR1 |= SPE (peripheral enable)
+
+Application -> SPI : transmit(uint8_t data)
+SPI -> REG : poll SR.TXE
+SPI -> REG : write DR = data
+REG -> SPI : poll SR.RXNE (dummy clock-in)
+SPI -> REG : read DR (discard, full-duplex clears RXNE)
+
+Application -> SPI : receive()
+SPI -> REG : write dummy byte to DR\n(generate clock)
+SPI -> REG : poll SR.RXNE
+SPI -> REG : read DR
+REG --> Application : received byte
+
+note right of SPI
+  Polling-based (no DMA/IT in v0.7.0).
+  NSS handling assumed software-controlled
+  via a plain GPIO output, consistent with
+  how EXTI/USART reuse the GPIO driver.
+end note
+
+@enduml

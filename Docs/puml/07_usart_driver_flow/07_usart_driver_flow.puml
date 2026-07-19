@@ -1,0 +1,41 @@
+@startuml USART_Driver_Flow
+title USART Driver — Configuration & Transmit/Receive Flow
+
+skinparam backgroundColor #FEFEFE
+skinparam activity {
+    BackgroundColor #F5FAFF
+    BorderColor #2C7FB8
+    ArrowColor #2C7FB8
+}
+
+start
+:Application constructs\nUSART(USART_Instance instance);
+:RCC_Driver enables USART\nperipheral clock (APB1/APB2);
+:Configure GPIO pins as\nAlternate Function (TX/RX);
+:Set USART_BRR\n(baud rate, from PCLK);
+:Set USART_CR1\n(word length, enable TX/RX/UE);
+:Set USART_CR2\n(stop bits);
+:Set USART_CR3\n(flow control, if used);
+
+split
+  :transmit(uint8_t data);
+  :Write USART_DR;
+  :Poll SR.TXE until set;
+  note right
+    transmit() intentionally
+    skips the TC (transmission
+    complete) wait — fine for
+    back-to-back polling.
+  end note
+split again
+  :receive();
+  :Poll SR.RXNE until set;
+  :Read USART_DR;
+end split
+
+:txString(const char* str);
+:Loop transmit() per character;
+
+stop
+
+@enduml

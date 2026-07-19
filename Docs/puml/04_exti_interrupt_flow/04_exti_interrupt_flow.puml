@@ -1,0 +1,43 @@
+@startuml EXTI_Interrupt_Flow
+title EXTI Driver — Interrupt Configuration & Runtime Flow
+
+skinparam backgroundColor #FEFEFE
+skinparam sequence {
+    ArrowColor #2C7FB8
+    LifeLineBorderColor #2C7FB8
+    ParticipantBackgroundColor #F5FAFF
+    ParticipantBorderColor #2C7FB8
+}
+
+actor Application
+participant "EXTI" as EXTI
+participant "SYSCFG_EXTICR" as SYSCFG
+participant "EXTI_IMR/RTSR/FTSR" as EXTIREG
+participant "NVIC" as NVIC
+participant "ISR (EXTIx_IRQHandler)" as ISR
+
+== Configuration (constructor) ==
+Application -> EXTI : EXTI(GPIO_Port::PORTx, pin)
+EXTI -> SYSCFG : configureEXTILine(port, pin)
+EXTI -> EXTIREG : configureTrigger(trigger)\n(set RTSR/FTSR bits)
+
+== Enable ==
+Application -> EXTI : enableInterrupt()
+EXTI -> EXTIREG : set IMR bit (unmask line)
+Application -> NVIC : NVIC::enableIRQ(EXTIx_IRQn)
+NVIC -> NVIC : set ISER bit,\nconfigure IPR priority
+
+== Runtime ==
+[-> EXTIREG : External edge on GPIO pin
+EXTIREG -> NVIC : interrupt request
+NVIC -> ISR : vector to EXTIx_IRQHandler
+ISR -> EXTIREG : check & clear PR (pending) bit
+ISR -> Application : user callback / flag
+
+note right of EXTI
+  setTrigger() is declared but NOT
+  implemented in v0.6.0 — use
+  configureTrigger() instead.
+end note
+
+@enduml

@@ -1,0 +1,42 @@
+@startuml RCC_Clock_Tree
+title RCC Driver — Clock Tree (Peripheral Enable Paths)
+
+skinparam backgroundColor #FEFEFE
+skinparam rectangle {
+    BackgroundColor #F5FAFF
+    BorderColor #2C7FB8
+}
+
+rectangle "HSI / HSE / PLL\n(System Clock Source)" as SRC
+rectangle "AHB Prescaler\n(SYSCLK -> HCLK)" as AHB_PRE
+rectangle "APB1 Prescaler\n(HCLK -> PCLK1, max 42MHz)" as APB1_PRE
+rectangle "APB2 Prescaler\n(HCLK -> PCLK2, max 84MHz)" as APB2_PRE
+
+rectangle "RCC_AHB1ENR" as AHB1EN
+rectangle "RCC_APB1ENR" as APB1EN
+rectangle "RCC_APB2ENR" as APB2EN
+
+rectangle "GPIOA..I\n(AHB1)" as GPIO_P
+rectangle "USART2/3\nI2C1/2/3 (APB1)" as APB1_P
+rectangle "USART1/6\nSPI1 (APB2)" as APB2_P
+
+SRC --> AHB_PRE
+AHB_PRE --> APB1_PRE
+AHB_PRE --> APB2_PRE
+
+AHB_PRE --> AHB1EN
+APB1_PRE --> APB1EN
+APB2_PRE --> APB2EN
+
+AHB1EN --> GPIO_P : enableGPIOClock(port)
+APB1EN --> APB1_P : enableAPB1Clock(peripheral)
+APB2EN --> APB2_P : enableAPB2Clock(peripheral)
+
+note bottom of GPIO_P
+  Every driver constructor (GPIO,
+  USART, SPI, I2C) calls the
+  matching RCC_Driver enable method
+  before touching peripheral registers.
+end note
+
+@enduml

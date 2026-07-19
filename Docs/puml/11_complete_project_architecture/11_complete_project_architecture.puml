@@ -1,0 +1,65 @@
+@startuml Complete_Project_Architecture
+title STM32F407 Bare-Metal C++ Drivers — Complete Project Architecture (up to v0.8.0)
+
+skinparam backgroundColor #FEFEFE
+skinparam rectangle {
+    BackgroundColor #F5FAFF
+    BorderColor #2C7FB8
+    ArrowColor #2C7FB8
+}
+skinparam packageStyle rectangle
+
+package "Toolchain" {
+  rectangle "STM32CubeIDE / GCC ARM\nOpenOCD + GDB" as TOOLCHAIN
+}
+
+package "Repository: stm32f407-baremetal-cpp-drivers" {
+
+  package "Startup" {
+    rectangle "startup_stm32f407vgtx.s\n(vector table, Reset_Handler)" as STARTUP
+  }
+
+  package "Linker" {
+    rectangle "STM32F407VGTX_FLASH.ld\nSTM32F407VGTX_RAM.ld" as LINKER
+  }
+
+  package "Drivers/Drivers" {
+    rectangle "Inc/*.h + Src/*.cpp\nGPIO · RCC · EXTI · NVIC\nSysTick · USART · SPI · I2C" as DRIVERS
+  }
+
+  package "Drivers/Applications" {
+    rectangle "Example apps\n(one active main() at a time)" as APPS
+  }
+
+  package "Docs" {
+    rectangle "GPIO.md · RCC.md · USART.md\nSPI.md · I2C.md · CAN.md" as DOCS_MD
+    rectangle "puml/\n(this diagram set)" as DOCS_PUML
+  }
+}
+
+package "Hardware" {
+  rectangle "STM32F407VG Discovery\n(ARM Cortex-M4)" as BOARD
+  rectangle "ST-Link V2" as STLINK
+}
+
+TOOLCHAIN --> DRIVERS : compiles
+TOOLCHAIN --> APPS : compiles
+STARTUP --> DRIVERS : calls main() after\nreset & static init
+LINKER --> STARTUP : places .isr_vector,\n.text, .data, .bss
+
+APPS --> DRIVERS : uses driver API
+DRIVERS --> BOARD : direct register I/O
+TOOLCHAIN --> STLINK : flash + debug
+STLINK --> BOARD : SWD
+
+DOCS_MD ..> DRIVERS : documents
+DOCS_PUML ..> DRIVERS : documents
+
+note bottom of DRIVERS
+  Six drivers released through v0.6.0
+  (GPIO, RCC, EXTI, NVIC, SysTick, USART).
+  SPI added in v0.7.0, I2C in v0.8.0 —
+  all register-level, no HAL/LL.
+end note
+
+@enduml

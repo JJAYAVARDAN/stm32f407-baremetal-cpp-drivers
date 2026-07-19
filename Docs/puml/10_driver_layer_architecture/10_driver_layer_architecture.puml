@@ -1,0 +1,68 @@
+@startuml Driver_Layer_Architecture
+title Driver Layer Architecture — up to v0.8.0 (I2C)
+
+skinparam backgroundColor #FEFEFE
+skinparam rectangle {
+    BackgroundColor #F5FAFF
+    BorderColor #2C7FB8
+    ArrowColor #2C7FB8
+}
+
+package "Application Layer" {
+  rectangle "Applications/\n(LED blink, Button+EXTI,\nUSART loopback, SPI/I2C demos)" as APP
+}
+
+package "Driver Layer (C++, object-oriented)" {
+  rectangle "GPIO" as GPIO
+  rectangle "USART" as USART
+  rectangle "SPI" as SPI
+  rectangle "I2C" as I2C
+  rectangle "EXTI" as EXTI
+  rectangle "NVIC" as NVIC
+  rectangle "SysTick" as SYSTICK
+  rectangle "RCC" as RCC
+}
+
+package "Register Access Layer" {
+  rectangle "Peripheral register structs\n(GPIO_RegDef_t, USART_RegDef_t,\nSPI_RegDef_t, I2C_RegDef_t, ...)" as REGS
+}
+
+package "Hardware" {
+  rectangle "STM32F407VG Silicon" as HW
+}
+
+APP --> GPIO
+APP --> USART
+APP --> SPI
+APP --> I2C
+APP --> EXTI
+
+GPIO --> RCC : enableGPIOClock()
+USART --> RCC : enableAPB1/2Clock()
+USART --> GPIO : configure TX/RX pins
+SPI --> RCC : enableAPB1/2Clock()
+SPI --> GPIO : configure SCK/MOSI/MISO/NSS
+I2C --> RCC : enableAPB1Clock()
+I2C --> GPIO : configure SDA/SCL
+EXTI --> GPIO : port + pin
+EXTI --> NVIC : enableIRQ()
+NVIC --> REGS
+SYSTICK --> REGS
+
+GPIO --> REGS
+USART --> REGS
+SPI --> REGS
+I2C --> REGS
+EXTI --> REGS
+RCC --> REGS
+
+REGS --> HW
+
+note bottom of REGS
+  No HAL, no LL — every driver
+  reads/writes memory-mapped
+  registers directly via typed
+  struct pointers.
+end note
+
+@enduml

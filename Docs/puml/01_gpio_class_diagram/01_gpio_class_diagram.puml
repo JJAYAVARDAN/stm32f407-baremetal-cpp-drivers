@@ -1,0 +1,88 @@
+@startuml GPIO_Class_Diagram
+title GPIO Driver — Class Diagram
+
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FEFEFE
+skinparam class {
+    BackgroundColor #F5FAFF
+    BorderColor #2C7FB8
+    ArrowColor #2C7FB8
+}
+
+enum GPIO_Port {
+    PORTA
+    PORTB
+    PORTC
+    PORTD
+    PORTE
+    PORTF
+    PORTG
+    PORTH
+    PORTI
+}
+
+enum GPIO_Mode {
+    INPUT
+    OUTPUT
+    ALTERNATE
+    ANALOG
+}
+
+enum GPIO_OutputType {
+    PUSH_PULL
+    OPEN_DRAIN
+}
+
+enum GPIO_Speed {
+    LOW
+    MEDIUM
+    FAST
+    HIGH
+}
+
+enum GPIO_Pull {
+    NONE
+    PULL_UP
+    PULL_DOWN
+}
+
+class RCC_Driver {
+    +enableGPIOClock(GPIO_Port port)
+    +enableAPB1Clock(...)
+    +enableAPB2Clock(...)
+}
+
+class GPIO {
+    -mPort : Gpio_RegDef_t*
+    -mPin : uint8_t
+    -mRcc : RCC_Driver
+    --
+    +GPIO(GPIO_Port port, uint8_t pin)
+    +setMode(GPIO_Mode mode) : void
+    +setOutputType(GPIO_OutputType type) : void
+    +setSpeed(GPIO_Speed speed) : void
+    +setPull(GPIO_Pull pull) : void
+    +setAlternateFunction(uint8_t af) : void
+    +write(bool state) : void
+    +read() : bool
+    +toggle() : void
+}
+
+GPIO "1" *-- "1" RCC_Driver : owns / enables clock
+GPIO ..> GPIO_Port : constructed with
+GPIO ..> GPIO_Mode : uses
+GPIO ..> GPIO_OutputType : uses
+GPIO ..> GPIO_Speed : uses
+GPIO ..> GPIO_Pull : uses
+
+note right of GPIO
+  Constructor enables the port's
+  peripheral clock via RCC_Driver
+  before any register access.
+
+  GPIO_Port is an enum class —
+  construct with GPIO_Port::PORTx,
+  NOT the raw GPIOx register macro.
+end note
+
+@enduml

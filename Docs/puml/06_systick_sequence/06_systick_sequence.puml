@@ -1,0 +1,40 @@
+@startuml SysTick_Sequence
+title SysTick Driver — Init & Delay Sequence
+
+skinparam backgroundColor #FEFEFE
+skinparam sequence {
+    ArrowColor #2C7FB8
+    LifeLineBorderColor #2C7FB8
+    ParticipantBackgroundColor #F5FAFF
+    ParticipantBorderColor #2C7FB8
+}
+
+actor Application
+participant "SysTick" as ST
+participant "SysTick_CTRL/LOAD/VAL" as REG
+participant "SysTick_Handler (ISR)" as ISR
+
+Application -> ST : init(tickFreq = 1000)
+ST -> REG : LOAD = (SystemCoreClock / tickFreq) - 1
+ST -> REG : CTRL |= ENABLE | TICKINT | CLKSOURCE
+note right of ST
+  mTickFreq stored for later use.
+  delayMs() assumes 1ms ticks —
+  only correct if tickFreq == 1000.
+end note
+
+Application -> ST : delayMs(100)
+ST -> ST : record start tick count
+loop until elapsed >= 100
+  REG -> ISR : counter reaches 0,\nauto-reloads from LOAD
+  ISR -> ST : increment tick counter
+end
+ST --> Application : return (100ms elapsed)
+
+Application -> ST : delayUs(50)
+note right of ST
+  delayUs() is a documented TODO
+  stub in v0.6.0 — not yet timing-accurate.
+end note
+
+@enduml

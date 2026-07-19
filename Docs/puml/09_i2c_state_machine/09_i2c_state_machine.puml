@@ -1,0 +1,45 @@
+@startuml I2C_State_Machine
+title I2C Driver — Master Transaction State Machine
+' NOTE: modeled on the standard STM32F4 I2C register sequence
+' (CR1/CR2/SR1/SR2/DR) and the same RCC-owning constructor pattern
+' used by the other drivers. Verify against actual I2C_Driver.h/.cpp.
+
+skinparam backgroundColor #FEFEFE
+skinparam state {
+    BackgroundColor #F5FAFF
+    BorderColor #2C7FB8
+    ArrowColor #2C7FB8
+}
+
+[*] --> Idle
+
+Idle --> GenStart : start()\nCR1.START = 1
+GenStart --> AddressPhase : poll SR1.SB set
+
+AddressPhase --> AddrAck : write DR = (7-bit addr << 1) | R/W
+AddrAck --> TransferData : poll SR1.ADDR,\nread SR1+SR2 to clear
+
+state TransferData {
+  [*] --> Writing : if Write
+  [*] --> Reading : if Read
+
+  Writing --> Writing : write(data)\nwrite DR, poll SR1.TXE
+  Writing --> [*] : all bytes sent,\npoll SR1.BTF
+
+  Reading --> Reading : read()\npoll SR1.RXNE, read DR
+  Reading --> [*] : last byte:\nNACK + STOP before final read
+}
+
+TransferData --> GenStop : stop()\nCR1.STOP = 1
+GenStop --> Idle
+
+Idle --> Idle : isBusBusy()\ncheck SR2.BUSY
+
+note right of AddrAck
+  NACK on address (SR1.AF set)
+  means device not present —
+  driver should clear AF and
+  generate STOP.
+end note
+
+@enduml

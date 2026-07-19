@@ -1,0 +1,36 @@
+@startuml NVIC_Class_Diagram
+title NVIC Driver — Static Interrupt Controller Interface
+
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FEFEFE
+skinparam class {
+    BackgroundColor #F5FAFF
+    BorderColor #2C7FB8
+    ArrowColor #2C7FB8
+}
+
+class NVIC <<static>> {
+    +{static} enableIRQ(IRQn_Type irq) : void
+    +{static} disableIRQ(IRQn_Type irq) : void
+    +{static} setPriority(IRQn_Type irq, uint8_t priority) : void
+}
+
+note right of NVIC
+  All methods are static — NVIC
+  is a hardware singleton, not
+  an owned instance.
+
+  enableIRQ() sets the matching
+  bit in NVIC_ISER[n].
+  disableIRQ() sets NVIC_ICER[n].
+  setPriority() writes NVIC_IPR[n];
+  hardware only implements the
+  top 4 bits of the priority field
+  (STM32F4 uses 4 priority bits).
+end note
+
+class "Peripheral Driver\n(EXTI, USART, ...)" as Peripheral
+
+Peripheral ..> NVIC : NVIC::enableIRQ(...)\nNVIC::setPriority(...)
+
+@enduml

@@ -1,0 +1,30 @@
+@startuml GPIO_Init_Flow
+title GPIO Driver — Initialization Flow
+
+skinparam backgroundColor #FEFEFE
+skinparam activity {
+    BackgroundColor #F5FAFF
+    BorderColor #2C7FB8
+    ArrowColor #2C7FB8
+}
+
+start
+:Application calls\nGPIO led(GPIO_Port::PORTx, pin);
+:Constructor stores port base address\nand pin number;
+:RCC_Driver::enableGPIOClock(port)\n(set bit in RCC_AHB1ENR);
+:Application calls\nled.setMode(GPIO_Mode::OUTPUT);
+if (Mode == ALTERNATE?) then (yes)
+  :setAlternateFunction(af)\n(write AFRL/AFRH);
+else (no)
+endif
+:Write 2-bit field in GPIOx_MODER\nfor the pin;
+if (Mode == OUTPUT?) then (yes)
+  :setOutputType()\n(write GPIOx_OTYPER);
+  :setSpeed()\n(write GPIOx_OSPEEDR);
+else (no)
+endif
+:setPull()\n(write GPIOx_PUPDR);
+:GPIO ready for read() / write() / toggle();
+stop
+
+@enduml
