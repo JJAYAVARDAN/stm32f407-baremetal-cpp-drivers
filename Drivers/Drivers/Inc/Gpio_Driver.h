@@ -132,7 +132,31 @@ public:
 
 	void deInit();
 };
+/*enum class GPIO_Port
+{
+    PORTA = 0,
+    PORTB,
+    PORTC,
+    PORTD,
+    PORTE,
+    PORTF,
+    PORTG,
+    PORTH,
+    PORTI
+};*/
 
+enum class GPIO_Port
+{
+	PORTA = 0,
+	PORTB,
+	PORTC,
+	PORTD,
+	PORTE,
+	PORTF,
+	PORTG,
+	PORTH,
+	PORTI
+};
 
 
 
