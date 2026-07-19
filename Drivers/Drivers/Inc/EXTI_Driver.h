@@ -71,11 +71,14 @@ private:
 	GPIO_Port mPort;
 	uint8_t mPin;
 
-	void SYSCFGClock();
 	void ConfigureEXTI();
 public:
 	/* Constructor */
 	EXTI(RCC_GPIO port, uint8_t pin);
+	/* Initialize SYSCFG clock for EXTI */
+	void SYSCFGClock();
+	/* Configure EXTI line mapping for the selected GPIO pin */
+	void configureEXTILine();
 	/* Method to set the trigger type for the EXTI line */
 	void setTrigger(EXTI_Trigger trigger);
 	/*Interrupt configuration methods*/
