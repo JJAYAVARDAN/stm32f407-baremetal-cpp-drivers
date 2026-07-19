@@ -1,14 +1,38 @@
-07:46:59 **** Incremental Build of configuration Debug for project Drivers ****
+11:41:01 **** Clean-only build of configuration Debug for project Drivers ****
+make -j16 clean 
+rm -rf ./Startup/startup_stm32f407vgtx.d ./Startup/startup_stm32f407vgtx.o
+rm -rf ./Src/syscalls.cyclo ./Src/syscalls.d ./Src/syscalls.o ./Src/syscalls.su ./Src/sysmem.cyclo ./Src/sysmem.d ./Src/sysmem.o ./Src/sysmem.su
+rm -rf ./Drivers/Src/EXTI_Driver.cyclo ./Drivers/Src/EXTI_Driver.d ./Drivers/Src/EXTI_Driver.o ./Drivers/Src/EXTI_Driver.su ./Drivers/Src/Gpio_driver.cyclo ./Drivers/Src/Gpio_driver.d ./Drivers/Src/Gpio_driver.o ./Drivers/Src/Gpio_driver.su ./Drivers/Src/RCC_Driver.cyclo ./Drivers/Src/RCC_Driver.d ./Drivers/Src/RCC_Driver.o ./Drivers/Src/RCC_Driver.su ./Drivers/Src/SysTick_Driver.cyclo ./Drivers/Src/SysTick_Driver.d ./Drivers/Src/SysTick_Driver.o ./Drivers/Src/SysTick_Driver.su
+rm -rf ./Applications/Led_blink/Butto_app.cyclo ./Applications/Led_blink/Butto_app.d ./Applications/Led_blink/Butto_app.o ./Applications/Led_blink/Butto_app.su
+rm -rf Drivers.elf Drivers.list Drivers.map default.size.stdout
+rm: can't remove 'Drivers.elf': Permission denied
+make: [makefile:105: clean] Error 1 (ignored)
+ 
+11:41:02 **** Incremental Build of configuration Debug for project Drivers ****
 make -j16 all 
+arm-none-eabi-gcc -mcpu=cortex-m4 -g3 -DDEBUG -c -x assembler-with-cpp -MMD -MP -MF"Startup/startup_stm32f407vgtx.d" -MT"Startup/startup_stm32f407vgtx.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Startup/startup_stm32f407vgtx.o" "../Startup/startup_stm32f407vgtx.s"
+arm-none-eabi-gcc "../Src/syscalls.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F407G_DISC1 -DSTM32F4 -DSTM32F407VGTx -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/syscalls.d" -MT"Src/syscalls.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/syscalls.o"
+arm-none-eabi-gcc "../Src/sysmem.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F407G_DISC1 -DSTM32F4 -DSTM32F407VGTx -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/sysmem.d" -MT"Src/sysmem.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/sysmem.o"
+arm-none-eabi-g++ "../Drivers/Src/EXTI_Driver.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DSTM32 -DSTM32F407G_DISC1 -DSTM32F4 -DSTM32F407VGTx -c -I../Inc -I"E:/STM32F407VG_DRIVER DEVELEPMENT/Drivers/Inc" -I"E:/STM32F407VG_DRIVER DEVELEPMENT/Drivers/Drivers/Inc" -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/Src/EXTI_Driver.d" -MT"Drivers/Src/EXTI_Driver.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Drivers/Src/EXTI_Driver.o"
+arm-none-eabi-g++ "../Drivers/Src/Gpio_driver.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DSTM32 -DSTM32F407G_DISC1 -DSTM32F4 -DSTM32F407VGTx -c -I../Inc -I"E:/STM32F407VG_DRIVER DEVELEPMENT/Drivers/Inc" -I"E:/STM32F407VG_DRIVER DEVELEPMENT/Drivers/Drivers/Inc" -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/Src/Gpio_driver.d" -MT"Drivers/Src/Gpio_driver.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Drivers/Src/Gpio_driver.o"
+arm-none-eabi-g++ "../Drivers/Src/RCC_Driver.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DSTM32 -DSTM32F407G_DISC1 -DSTM32F4 -DSTM32F407VGTx -c -I../Inc -I"E:/STM32F407VG_DRIVER DEVELEPMENT/Drivers/Inc" -I"E:/STM32F407VG_DRIVER DEVELEPMENT/Drivers/Drivers/Inc" -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/Src/RCC_Driver.d" -MT"Drivers/Src/RCC_Driver.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Drivers/Src/RCC_Driver.o"
+arm-none-eabi-g++ "../Drivers/Src/SysTick_Driver.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DSTM32 -DSTM32F407G_DISC1 -DSTM32F4 -DSTM32F407VGTx -c -I../Inc -I"E:/STM32F407VG_DRIVER DEVELEPMENT/Drivers/Inc" -I"E:/STM32F407VG_DRIVER DEVELEPMENT/Drivers/Drivers/Inc" -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/Src/SysTick_Driver.d" -MT"Drivers/Src/SysTick_Driver.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Drivers/Src/SysTick_Driver.o"
+arm-none-eabi-g++ "../Applications/Led_blink/Butto_app.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DSTM32 -DSTM32F407G_DISC1 -DSTM32F4 -DSTM32F407VGTx -c -I../Inc -I"E:/STM32F407VG_DRIVER DEVELEPMENT/Drivers/Inc" -I"E:/STM32F407VG_DRIVER DEVELEPMENT/Drivers/Drivers/Inc" -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Applications/Led_blink/Butto_app.d" -MT"Applications/Led_blink/Butto_app.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Applications/Led_blink/Butto_app.o"
+arm-none-eabi-g++ -o "Drivers.elf" @"objects.list"   -mcpu=cortex-m4 -T"E:\STM32F407VG_DRIVER DEVELEPMENT\Drivers\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: Drivers.elf
+ 
 arm-none-eabi-size  Drivers.elf 
+arm-none-eabi-objdump -h -S Drivers.elf  > "Drivers.list"
    text	   data	    bss	    dec	    hex	filename
-   1672	      0	   1568	   3240	    ca8	Drivers.elf
+   2328	      0	   1568	   3896	    f38	Drivers.elf
 Finished building: default.size.stdout
  
-07:47:05 **** Incremental Build of configuration Debug for project Drivers ****
+Finished building: Drivers.list
+ 
+11:41:06 **** Incremental Build of configuration Debug for project Drivers ****
 make -j16 all 
 arm-none-eabi-size  Drivers.elf 
    text	   data	    bss	    dec	    hex	filename
-   1672	      0	   1568	   3240	    ca8	Drivers.elf
+   2328	      0	   1568	   3896	    f38	Drivers.elf
 Finished building: default.size.stdout
  
