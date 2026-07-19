@@ -13,45 +13,46 @@
   *                      Constructor
   *********************************************************************/
 
-GPIO::GPIO(Gpio_RegDef_t* port, uint8_t pin)
+GPIO::GPIO(GPIO_Port port, uint8_t pin)
 {
-	mport = port;
+	mPortId = port;
 	mpin = pin;
-	/*
-	 * Enable clock for Respective port
-	 */
-	if (port == GPIOA)
+
+	switch (port)
 	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTA);
+		case GPIO_Port::PORTA:
+			mport = GPIOA;
+			break;
+		case GPIO_Port::PORTB:
+			mport = GPIOB;
+			break;
+		case GPIO_Port::PORTC:
+			mport = GPIOC;
+			break;
+		case GPIO_Port::PORTD:
+			mport = GPIOD;
+			break;
+		case GPIO_Port::PORTE:
+			mport = GPIOE;
+			break;
+		case GPIO_Port::PORTF:
+			mport = GPIOF;
+			break;
+		case GPIO_Port::PORTG:
+			mport = GPIOG;
+			break;
+		case GPIO_Port::PORTH:
+			mport = GPIOH;
+			break;
+		case GPIO_Port::PORTI:
+			mport = GPIOI;
+			break;
 	}
-	else if (port == GPIOB)
-	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTB);
-	}
-	else if (port == GPIOC)
-	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTC);
-	}
-	else if (port == GPIOD)
-	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTD);
-	}
-	else if (port == GPIOE)
-	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTE);
-	}
-	else if (port == GPIOF)
-	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTF);
-	}
-	else if (port == GPIOG)
-	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTG);
-	}
-	else if (port == GPIOH)
-	{
-		mRCC.enableGPIOClock(RCC_GPIO::PORTH);
-	}
+}
+
+void GPIO::clockEnable()
+{
+	mRCC.enableGPIOClock(static_cast<RCC_GPIO>(mPortId));
 }
 
 

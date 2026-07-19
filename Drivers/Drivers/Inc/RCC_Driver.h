@@ -186,6 +186,28 @@ enum class RCC_GPIO
 	PORTI
 
 };
+/*********************************************************************
+ *                  USART Clock Selection
+ *
+ * APB2ENR
+ * Bit 4 -> USART1
+ * Bit 5 -> USART6
+ *
+ * APB1ENR
+ * Bit 17 -> USART2
+ * Bit 18 -> USART3
+ * Bit 19 -> UART4
+ * Bit 20 -> UART5
+ *********************************************************************/
+enum class RCC_USART
+{
+    USART1,
+    USART2,
+    USART3,
+    UART4,
+    UART5,
+    USART6
+};
 
 
 
@@ -244,7 +266,15 @@ public:
 	 */
 	void enableGPIOClock(RCC_GPIO port);
 
+	/*
+	* Enable USART peripheral clock
+	*/
+	void enableUSARTClock(RCC_USART usart);
 
+	/*
+	* Disable USART peripheral clock
+	*/
+	void disableUSARTClock(RCC_USART usart);		
 
 
 	/*
