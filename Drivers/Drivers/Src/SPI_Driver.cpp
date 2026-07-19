@@ -1,0 +1,340 @@
+/*
+ * SPI_Driver.cpp
+ *
+ *  Created on: 19-Jul-2026
+ *      Author: jolap
+ */
+
+ #include "SPI_Driver.h"
+
+SPI::SPI(SPI_Instance instance)
+{
+    switch (instance)
+    {
+        case SPI_Instance::SPI1:
+            mSPI = SPI1_REG;
+            break;
+        case SPI_Instance::SPI2:
+            mSPI = SPI2_REG;
+            break;
+        case SPI_Instance::SPI3:
+            mSPI = SPI3_REG;
+            break;
+        default:
+            mSPI = SPI1_REG;
+            break;
+    }
+}
+
+void SPI::enableClock()
+{
+    RCC rcc;
+
+    if (mSPI == SPI1_REG)
+    {
+        rcc.enableSPIClock(RCC_SPI::SPI1);
+    }
+    else if (mSPI == SPI2_REG)
+    {
+        rcc.enableSPIClock(RCC_SPI::SPI2);
+    }
+    else
+    {
+        rcc.enableSPIClock(RCC_SPI::SPI3);
+    }
+}
+
+ /*********************************************************************
+ *                  Initialize SPI Peripheral
+ *********************************************************************/
+
+void SPI::init(SPI_Mode mode,
+               SPI_BaudRate baudRate,
+               SPI_ClockPolarity polarity,
+               SPI_ClockPhase phase,
+               SPI_DataSize dataSize,
+               SPI_SSM ssm)
+{
+    /**************************************************************
+     * Enable SPI Clock
+     **************************************************************/
+
+    enableClock();
+
+    /**************************************************************
+     * Disable SPI before configuration
+     **************************************************************/
+
+    disable();
+
+    /**************************************************************
+     * Clear Configuration Registers
+     **************************************************************/
+
+    mSPI->CR1 = 0;
+    mSPI->CR2 = 0;
+
+    /**************************************************************
+     * Master / Slave
+     *
+     * Bit 2 : MSTR
+     **************************************************************/
+
+    if (mode == SPI_Mode::MASTER)
+    {
+        mSPI->CR1 |= (1U << 2);
+    }
+
+    /**************************************************************
+     * Baud Rate
+     *
+     * Bits 5:3
+     **************************************************************/
+
+    mSPI->CR1 |=
+        (static_cast<uint32_t>(baudRate) << 3);
+
+    /**************************************************************
+     * Clock Polarity
+     *
+     * Bit 1
+     **************************************************************/
+
+    if (polarity == SPI_ClockPolarity::HIGH)
+    {
+        mSPI->CR1 |= (1U << 1);
+    }
+
+    /**************************************************************
+     * Clock Phase
+     *
+     * Bit 0
+     **************************************************************/
+
+    if (phase == SPI_ClockPhase::SECOND_EDGE)
+    {
+        mSPI->CR1 |= (1U << 0);
+    }
+
+    /**************************************************************
+     * Data Frame Format
+     *
+     * Bit 11
+     **************************************************************/
+
+    if (dataSize == SPI_DataSize::BITS_16)
+    {
+        mSPI->CR1 |= (1U << 11);
+    }
+
+    /**************************************************************
+     * Software Slave Management
+     *
+     * SSM -> Bit 9
+     * SSI -> Bit 8
+     **************************************************************/
+
+    if (ssm == SPI_SSM::ENABLE)
+    {
+        mSPI->CR1 |= (1U << 9);
+        mSPI->CR1 |= (1U << 8);
+    }
+
+    /**************************************************************
+     * Enable SPI
+     **************************************************************/
+
+    enable();
+}
+
+/*********************************************************************
+ *                  Enable SPI
+ *********************************************************************/
+
+void SPI::enable()
+{
+    /*
+     * SPE bit (CR1 Bit 6)
+     */
+
+    mSPI->CR1 |= (1U << 6);
+}
+
+/*********************************************************************
+ *                  Disable SPI
+ *********************************************************************/
+
+void SPI::disable()
+{
+    /*
+     * Clear SPE bit
+     */
+
+    mSPI->CR1 &= ~(1U << 6);
+}
+
+/*********************************************************************
+ *                  TX Buffer Empty Flag
+ *
+ * SR Bit 1 : TXE
+ *
+ * Returns:
+ * true  -> Transmit buffer empty
+ * false -> Transmit buffer not empty
+ *
+ *********************************************************************/
+
+bool SPI::isTXE()
+{
+    return (mSPI->SR & (1U << 1));
+}
+
+
+/*********************************************************************
+ *                  RX Buffer Not Empty Flag
+ *
+ * SR Bit 0 : RXNE
+ *
+ * Returns:
+ * true  -> Receive buffer contains data
+ * false -> No data available
+ *
+ *********************************************************************/
+
+bool SPI::isRXNE()
+{
+    return (mSPI->SR & (1U << 0));
+}
+
+
+/*********************************************************************
+ *                  SPI Busy Flag
+ *
+ * SR Bit 7 : BSY
+ *
+ * Returns:
+ * true  -> SPI Busy
+ * false -> SPI Idle
+ *
+ *********************************************************************/
+
+bool SPI::isBusy()
+{
+    return (mSPI->SR & (1U << 7));
+}
+
+/*********************************************************************
+ *                  Transmit One Byte
+ *********************************************************************/
+
+void SPI::transmit(uint8_t data)
+{
+    /*
+     * Wait until TX buffer is empty
+     */
+
+    while (!isTXE());
+
+    /*
+     * Write data into Data Register
+     */
+
+    *(_IO uint8_t*)&mSPI->DR = data;
+
+    /*
+     * Wait until SPI is no longer busy
+     */
+
+    while (isBusy());
+}
+
+/*********************************************************************
+ *                  Transmit One Half Word
+ *********************************************************************/
+
+void SPI::transmit16(uint16_t data)
+{
+    while (!isTXE());
+
+    mSPI->DR = data;
+
+    while (isBusy());
+}   
+
+/*********************************************************************
+ *                  Receive One Byte
+ *
+ * SPI is full-duplex. To receive data, transmit a dummy byte.
+ *********************************************************************/
+
+uint8_t SPI::receive()
+{
+    /*
+     * Wait until TX buffer is empty
+     */
+    while (!isTXE());
+
+    /*
+     * Send dummy data to generate clock
+     */
+    *(_IO uint8_t*)&mSPI->DR = 0xFF;
+
+    /*
+     * Wait until data is received
+     */
+    while (!isRXNE());
+
+    /*
+     * Read received data
+     */
+    return *(_IO uint8_t*)&mSPI->DR;
+}
+
+/*********************************************************************
+ *                  Receive One Half Word
+*********************************************************************/
+
+uint16_t SPI::receive16()
+{
+    while (!isTXE());
+
+    mSPI->DR = 0xFFFF;
+
+    while (!isRXNE());
+
+    return static_cast<uint16_t>(mSPI->DR);
+}
+
+/*********************************************************************
+ *                  Transmit Buffer
+ *********************************************************************/
+
+void SPI::transmitBuffer(const uint8_t *buffer,
+                         uint32_t length)
+{
+    while (length)
+    {
+        transmit(*buffer);
+
+        buffer++;
+
+        length--;
+    }
+}
+
+/*********************************************************************
+ *                  Receive Buffer
+ *********************************************************************/
+
+void SPI::receiveBuffer(uint8_t *buffer,
+                        uint32_t length)
+{
+    while (length)
+    {
+        *buffer = receive();
+
+        buffer++;
+
+        length--;
+    }
+}
