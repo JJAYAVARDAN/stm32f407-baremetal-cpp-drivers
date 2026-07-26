@@ -204,3 +204,40 @@ void RCC::disableI2CClock(RCC_I2C i2c)
             break;
     }
 }
+/*********************************************************************
+ *                  Enable ADC Clock
+ *********************************************************************/
+ void RCC::enableADCClock(RCC_ADC adc)
+ {
+     switch(adc)
+     {
+        case RCC_ADC::ADC1:
+            mRcc -> RCC_APB2ENR |= (1 << 8);
+            break;
+        case RCC_ADC::ADC2:
+            mRcc -> RCC_APB2ENR |= (1 << 9);
+            break;
+        case RCC_ADC::ADC3:
+            mRcc -> RCC_APB2ENR |= (1 << 10);
+
+     }
+ }
+
+ /*********************************************************************
+ *                  Disable ADC Clock
+ *********************************************************************/
+void RCC::disableADCClock(RCC_ADC adc)
+{
+    switch(adc)
+    {
+        case RCC_ADC::ADC1:
+            mRcc -> RCC_APB2ENR &= ~(1 << 8);
+            break;
+        case RCC_ADC::ADC2:
+            mRcc -> RCC_APB2ENR &= ~(1 << 9);
+            break;
+        case RCC_ADC::ADC3:
+            mRcc -> RCC_APB2ENR &= ~(1 << 10);
+    }
+   
+}

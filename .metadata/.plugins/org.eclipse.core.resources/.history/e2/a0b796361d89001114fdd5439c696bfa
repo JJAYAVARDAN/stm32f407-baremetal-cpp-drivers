@@ -1,0 +1,269 @@
+/*
+ * ADC_Driver.h
+ *
+ *  Created on: 21-Jul-2026
+ *      Author: jolap
+ */
+
+#ifndef ADC_DRIVER_H_
+#define ADC_DRIVER_H_
+#include<cstdint>
+#include "RCC_Driver.h"
+
+#define _IO volatile
+
+ /*********************************************************************
+  *                      ADC Peripheral Base Addresses
+  *
+  * STM32F407 Reference Manual (RM0090)
+  *
+  * ADC1 : 0x40012000
+  * ADC2 : 0x40012100
+  * ADC3 : 0x40012200
+  *
+  *********************************************************************/
+
+#define ADC1_BASE 0x40012000UL
+#define ADC2_BASE 0x40012100UL
+#define ADC3_BASE 0x40012200UL
+
+  /*********************************************************************
+   *                      ADC Register Definition
+   *
+   * Offset
+   *
+   * 0x00 SR
+   * 0x04 CR1
+   * 0x08 CR2
+   * 0x0C SMPR1
+   * 0x10 SMPR2
+   * 0x14 JOFR1
+   * 0x18 JOFR2
+   * 0x1C JOFR3
+   * 0x20 JOFR4
+   * 0x24 HTR
+   * 0x28 LTR
+   * 0x2C SQR1
+   * 0x30 SQR2
+   * 0x34 SQR3
+   * 0x38 JSQR
+   * 0x3C JDR1
+   * 0x40 JDR2
+   * 0x44 JDR3
+   * 0x48 JDR4
+   * 0x4C DR
+   *
+   *********************************************************************/
+
+typedef struct
+{
+    _IO uint32_t SR;
+
+    _IO uint32_t CR1;
+
+    _IO uint32_t CR2;
+
+    _IO uint32_t SMPR1;
+
+    _IO uint32_t SMPR2;
+
+    _IO uint32_t JOFR1;
+
+    _IO uint32_t JOFR2;
+
+    _IO uint32_t JOFR3;
+
+    _IO uint32_t JOFR4;
+
+    _IO uint32_t HTR;
+
+    _IO uint32_t LTR;
+
+    _IO uint32_t SQR1;
+
+    _IO uint32_t SQR2;
+
+    _IO uint32_t SQR3;
+
+    _IO uint32_t JSQR;
+
+    _IO uint32_t JDR1;
+
+    _IO uint32_t JDR2;
+
+    _IO uint32_t JDR3;
+
+    _IO uint32_t JDR4;
+
+    _IO uint32_t DR;
+
+} ADC_RegDef_t;
+
+
+/*********************************************************************
+ *                      ADC Peripheral Definitions
+ *********************************************************************/
+
+#define ADC1_REG   ((ADC_RegDef_t*)ADC1_BASE)
+#define ADC2_REG   ((ADC_RegDef_t*)ADC2_BASE)
+#define ADC3_REG   ((ADC_RegDef_t*)ADC3_BASE)
+
+ /*********************************************************************
+  *                      ADC Instance
+  *********************************************************************/
+enum class ADC_Instance
+{
+    ADC1,
+    ADC2,
+    ADC3
+};
+/*********************************************************************
+ *                      ADC Resolution
+ *
+ * CR1 RES[25:24]
+ *********************************************************************/
+
+enum class ADC_Resolution
+{
+    BITS_12 = 0,
+    BITS_10,
+    BITS_8,
+    BITS_6
+};
+/*********************************************************************
+ *                      ADC Data Alignment
+ *
+ * CR2 ALIGN
+ *********************************************************************/
+
+enum class ADC_Alignment
+{
+    RIGHT = 0,
+    LEFT
+};
+
+/*********************************************************************
+ *                      ADC Conversion Mode
+ *********************************************************************/
+enum class ADC_MODE
+{
+    SINGLE,
+    CONTINOUS
+};
+
+
+/*********************************************************************
+ *                      ADC Channels
+ *********************************************************************/
+enum class ADC_Channel
+{
+    CH1 = 0,
+    CH2,
+    CH3,
+    CH4,
+    CH5,
+    CH6,
+    CH7,
+    CH8,
+    CH9,
+    CH10,
+    CH11,
+    CH12,
+    CH13,
+    CH14,
+    CH15,
+    CH16,
+    CH17,
+    CH18
+
+};
+
+/*********************************************************************
+ *                      ADC Sample Time
+ *
+ * SMPRx Register
+ *  000: 3 cycles
+    001: 15 cycles
+    010: 28 cycles
+    011: 56 cycles
+    100: 84 cycles
+    101: 112 cycles
+    110: 144 cycles
+    111: 480 cycles
+ *********************************************************************/
+
+enum class ADC_SampleTime
+{
+    CYCLES_3 = 0,
+    CYCLES_15,
+    CYCLES_28,
+    CYCLES_56,
+    CYCLES_84,
+    CYCLES_112,
+    CYCLES_144,
+    CYCLES_480
+};
+
+/*********************************************************************
+ *                      ADC Driver Class
+ *********************************************************************/ 
+
+class ADC
+{
+private:
+    /*
+     * Pointer to ADC peripheral registers
+     */
+    ADC_RegDef_t* mADC;
+public:
+     /**************************************************************
+     * Constructor
+     **************************************************************/
+
+    ADC(ADC_Instance instance);
+
+    /**************************************************************
+     * Clock Control
+     **************************************************************/
+
+    void enableClock();
+
+    /**************************************************************
+     * ADC Initialization
+     **************************************************************/
+
+    void init(ADC_Resolution resolution,
+        ADC_Alignment alignment,
+        ADC_MODE mode);
+
+    /**************************************************************
+     * ADC Peripheral Control
+     **************************************************************/
+
+    void enable();
+
+    void disable();
+
+    /**************************************************************
+     * ADC Peripheral Control
+     **************************************************************/
+    void selectChannel(ADC_Channel channel);
+
+    void setSampleTime(ADC_Channel channel,
+        ADC_SampleTime sampletime);
+
+    /**************************************************************
+     * Conversion Control
+     **************************************************************/
+    void startConversion();
+
+    bool conversionComplete();
+
+    uint16_t read();
+    
+    void stopConversion();
+
+
+};
+
+#endif /* ADC_DRIVER_H_ */

@@ -242,6 +242,23 @@ enum class RCC_I2C
     I2C2,
     I2C3
 };
+/*********************************************************************
+ *                  ADC Clock Selection
+ *
+ * APB2ENR Register
+ *
+ * Bit 8  -> ADC1
+ * Bit 9  -> ADC2
+ * Bit 10 -> ADC3
+ *
+ *********************************************************************/
+
+enum class RCC_ADC
+{
+    ADC1,
+    ADC2,
+    ADC3
+};
 
 /*********************************************************************
  *                      RCC Driver Class
@@ -339,6 +356,15 @@ public:
 	 * Disable I2C Peripheral Clock
 	 *********************************************************************/
 	void disableI2CClock(RCC_I2C i2c);
+	/*
+	 * Enable ADC Peripheral Clock
+	 */
+	void enableADCClock(RCC_ADC adc);
+
+	/*
+	 * Disable ADC Peripheral Clock
+	 */
+	void disableADCClock(RCC_ADC adc);
 
 
 
