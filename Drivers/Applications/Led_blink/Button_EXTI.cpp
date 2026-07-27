@@ -14,8 +14,7 @@ extern "C" void EXTI0_IRQHandler(void)
 int main()
 {
     /* Initialize SysTick */
-    SysTick sysTick;
-    sysTick.init(1000);
+    SysTick::init(1000);
 
     /* Configure LED */
     GPIO led(GPIOD, 12);
@@ -40,6 +39,6 @@ int main()
     while (1)
     {
         __asm volatile("wfi");
-        sysTick.delayMs(10);
+        SysTick::delayMs(10);
     }
 }

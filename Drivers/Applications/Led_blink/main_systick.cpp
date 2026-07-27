@@ -9,8 +9,7 @@
 
 int main()
 {
-	SysTick systick;
-	systick.init(1000);
+	SysTick::init(1000);
 
 	/*configure port*/
 	GPIO led(GPIOD, 12);
@@ -20,7 +19,4 @@ int main()
 	while (1)
 	{
 		led.toggle();
-		systick.delayMs(500);
-	}
-}
-
+        SysTick::delayMs(500);

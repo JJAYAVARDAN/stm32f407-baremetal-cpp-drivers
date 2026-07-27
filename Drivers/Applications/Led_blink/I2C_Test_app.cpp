@@ -69,8 +69,7 @@ int main()
      * SysTick
      **************************************************************/
 
-    SysTick tick;
-    tick.init(1000);
+    SysTick::init(1000);
 
     /**************************************************************
      * I2C1
@@ -99,9 +98,9 @@ int main()
 
             i2c.generateStop();
 
-            tick.delayMs(5);
+            SysTick::delayMs(5);
         }
 
-        tick.delayMs(1000);
+        SysTick::delayMs(1000);
     }
 }
