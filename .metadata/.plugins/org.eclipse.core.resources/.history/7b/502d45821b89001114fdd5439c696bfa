@@ -1,0 +1,20 @@
+/*
+ * ADC_Test_App.cpp
+ *
+ *  Created on: 26-Jul-2026
+ *      Author: jolap
+ */
+
+#include<cstdint>
+#include"Gpio_Driver.h"
+#include"USART_Driver.h"
+#include"SysTick_Driver.h"
+#include"ADC_Driver.h"
+
+int main()
+{
+    /**************************************************************
+     * Configure PA0 as Analog Input
+     **************************************************************/
+	GPIO adcPin(GPIO_Port::PORTA,0);
+}

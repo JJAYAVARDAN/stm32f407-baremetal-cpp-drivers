@@ -1,0 +1,10 @@
+17:10:31 **** Incremental Build of configuration Debug for project Led_driver ****
+make -j16 all 
+arm-none-eabi-size  Led_driver.elf 
+   text	   data	    bss	    dec	    hex	filename
+   1292	      0	   1568	   2860	    b2c	Led_driver.elf
+Finished building: default.size.stdout
+ 
+
+17:10:31 Build Finished. 0 errors, 0 warnings. (took 245ms)
+

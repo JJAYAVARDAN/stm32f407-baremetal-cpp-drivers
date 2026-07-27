@@ -1,0 +1,50 @@
+/*
+ * SPI_Driver.h
+ *
+ *  Created on: 19-Jul-2026
+ *      Author: jolap
+ */
+
+#ifndef SPI_DRIVER_H_
+#define SPI_DRIVER_H_
+
+#include<cstdint>
+#include"RCC_Driver.h"
+
+#define _IO volatile
+
+/*********************************************************************
+ *                      SPI Peripheral Base Addresses
+ *
+ * Reference Manual (RM0090)
+ *
+ * SPI1 : 0x40013000 (APB2)
+ * SPI2 : 0x40003800 (APB1)
+ * SPI3 : 0x40003C00 (APB1)
+ *
+ *********************************************************************/
+
+ #define SPI1_Base 0x40013000UL
+ #define SPI2_Base 0x40003800UL
+ #define SPI3_Base 0x40003C00UL
+ #define SPI4_Base 0x40013400UL
+ #define SPI5_Base 0x40015000UL
+ #define SPI6_Base 0x40015400UL
+ /*********************************************************************
+ *                      SPI Register Definition
+ *
+ * Offset
+ *
+ * 0x00 CR1
+ * 0x04 CR2
+ * 0x08 SR
+ * 0x0C DR
+ * 0x10 CRCPR
+ * 0x14 RXCRCR
+ * 0x18 TXCRCR
+ * 0x1C I2SCFGR
+ * 0x20 I2SPR
+ *
+ *********************************************************************/
+
+#endif /* SPI_DRIVER_H_ */

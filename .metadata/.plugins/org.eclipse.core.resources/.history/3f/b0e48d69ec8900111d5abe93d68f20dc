@@ -1,0 +1,224 @@
+/*
+ * main.cpp
+ *
+ * Driver Integration Test
+ *
+ * STM32F407 Bare Metal C++
+ *
+ */
+
+
+#include "RCC_Driver.h"
+#include "GPIO_Driver.h"
+#include "EXTI_Driver.h"
+#include "NVIC_Driver.h"
+#include "SysTick_Driver.h"
+#include "USART_Driver.h"
+#include "SPI_Driver.h"
+#include "I2C_Driver.h"
+#include "ADC_Driver.h"
+#include "TIM_Driver.h"
+
+
+
+int main()
+{
+
+
+    /**********************************************************
+     * RCC Test
+     **********************************************************/
+
+    RCC rcc;
+
+
+
+    /**********************************************************
+     * GPIO Test
+     *
+     * PD12 LED
+     **********************************************************/
+
+    GPIO led(
+        GPIO_Port::PORTD,
+        12
+    );
+
+
+    led.setMode(
+        GPIO_Mode::OUTPUT
+    );
+
+
+    led.setOutputType(
+        GPIO_OutputType::PUSH_PULL
+    );
+
+
+    led.setSpeed(
+        GPIO_Speed::HIGH
+    );
+
+
+
+    /**********************************************************
+     * EXTI Test
+     **********************************************************/
+
+    EXTI exti;
+
+
+
+    /**********************************************************
+     * NVIC Test
+     **********************************************************/
+
+    NVIC nvic;
+
+
+
+    /**********************************************************
+     * SysTick Test
+     **********************************************************/
+
+    SysTick systick;
+
+
+
+    /**********************************************************
+     * USART Test
+     **********************************************************/
+
+    USART usart(
+        USART_Instance::USART1
+    );
+
+
+    usart.init(
+        115200
+    );
+
+
+
+    /**********************************************************
+     * SPI Test
+     **********************************************************/
+
+    SPI spi(
+        SPI_Instance::SPI1
+    );
+
+
+    spi.init();
+
+
+
+    /**********************************************************
+     * I2C Test
+     **********************************************************/
+
+    I2C i2c(
+        I2C_Instance::I2C1
+    );
+
+
+    i2c.init();
+
+
+
+    /**********************************************************
+     * ADC Test
+     **********************************************************/
+
+    ADC adc(
+        ADC_Instance::ADC1
+    );
+
+
+    adc.init(
+        ADC_Resolution::BITS_12,
+        ADC_Alignment::RIGHT,
+        ADC_MODE::SINGLE
+    );
+
+
+    adc.selectChannel(
+        ADC_Channel::CH0
+    );
+
+
+
+    /**********************************************************
+     * TIM Test
+     **********************************************************/
+
+    TIM timer(
+        TIM_Instance::TIM2
+    );
+
+
+    timer.init(
+        TIM_CounterMode::UP
+    );
+
+
+    timer.setPrescaler(
+        8400 - 1
+    );
+
+
+    timer.setAutoReload(
+        10000 - 1
+    );
+
+
+    timer.start();
+
+
+
+    while(1)
+    {
+
+
+        /*
+         * TIM overflow LED toggle test
+         */
+
+        if(timer.isUpdateEvent())
+        {
+
+            timer.clearUpdateEvent();
+
+            led.toggle();
+
+        }
+
+
+
+        /*
+         * ADC conversion test
+         */
+
+        adc.startConversion();
+
+
+        if(adc.conversionComplete())
+        {
+
+            uint16_t adcValue = adc.read();
+
+            /*
+             * Add breakpoint here
+             *
+             * Check ADC value
+             */
+
+            (void)adcValue;
+
+        }
+
+
+    }
+
+
+}

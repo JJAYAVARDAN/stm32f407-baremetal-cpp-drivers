@@ -1,0 +1,24 @@
+15:25:12 **** Incremental Build of configuration Debug for project Switch ****
+make -j16 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F407G_DISC1 -DSTM32F4 -DSTM32F407VGTx -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+../Src/main.c:24:1: error: unknown type name 'class'
+   24 | class Led
+      | ^~~~~
+../Src/main.c:25:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+   25 | {
+      | ^
+../Src/main.c: In function 'main':
+../Src/main.c:81:5: error: unknown type name 'Led'
+   81 |     Led green;
+      |     ^~~
+../Src/main.c:85:14: error: request for member 'toggle' in something not a structure or union
+   85 |         green.toggle();
+      |              ^
+../Src/main.c:81:9: warning: variable 'green' set but not used [-Wunused-but-set-variable]
+   81 |     Led green;
+      |         ^~~~~
+make: *** [Src/subdir.mk:25: Src/main.o] Error 1
+"make -j16 all" terminated with exit code 2. Build might be incomplete.
+
+15:25:12 Build Failed. 5 errors, 1 warnings. (took 420ms)
+
