@@ -74,9 +74,7 @@ int main()
      * Configure SysTick
      **************************************************************/
 
-    SysTick tick;
-
-    tick.init(1000);
+    SysTick::init(1000);
 
     char buffer[32];
 
@@ -97,7 +95,7 @@ int main()
 
         usart.txString(buffer);
 
-        tick.delayMs(500);
+        SysTick::delayMs(500);
     }
 }
 

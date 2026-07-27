@@ -29,4 +29,31 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Applications</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/Applications</locationURI>
+		</link>
+		<link>
+			<name>Core</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/Core</locationURI>
+		</link>
+		<link>
+			<name>Docs</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/Docs</locationURI>
+		</link>
+		<link>
+			<name>Drivers</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/Drivers</locationURI>
+		</link>
+		<link>
+			<name>Startup</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/Startup</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

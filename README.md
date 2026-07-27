@@ -1,485 +1,199 @@
-# STM32F407 Bare-Metal C++ Framework
+# STM32F407 Bare-Metal C++ Driver Framework
 
-> A modern, register-level embedded framework for the STM32F407VG Discovery Board, developed entirely from scratch using Embedded C++ without STM32 HAL or LL libraries.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Platform](https://img.shields.io/badge/platform-STM32F407VG-blue)
+![Language](https://img.shields.io/badge/language-C%2B%2B-00599C)
+![Style](https://img.shields.io/badge/style-Bare--Metal%20%7C%20No%20HAL-critical)
 
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
-![Language](https://img.shields.io/badge/Language-C++14-orange.svg)
-![Platform](https://img.shields.io/badge/Platform-STM32F407-success.svg)
-![Architecture](https://img.shields.io/badge/Architecture-ARM_Cortex--M4-green.svg)
-
----
-
-# Project Overview
-
-The objective of this project is to understand ARM Cortex-M4 microcontrollers at the register level by developing a complete reusable embedded software framework from scratch.
-
-Unlike STM32Cube HAL or LL libraries, every peripheral driver in this repository directly accesses hardware registers using CMSIS definitions, providing complete control over the STM32F407 peripherals.
-
-This repository is intended for:
-
-- Embedded Engineers
-- Firmware Developers
-- Electronics Students
-- ARM Cortex-M Learners
-- Bare-Metal Programming Enthusiasts
+> A register-level, object-oriented C++ peripheral driver framework for the STM32F407VG microcontroller — built entirely from the STM32F407 Reference Manual (RM0090), with no dependency on STM32Cube HAL or LL libraries.
 
 ---
 
-# Features
+## Table of Contents
 
-- Register-Level Peripheral Programming
-- Modern Embedded C++ Design
-- Object-Oriented Driver Framework
-- Modular Architecture
-- No HAL
-- No LL Drivers
-- No Auto-generated Peripheral Code
-- Layered Driver Design
-- Example Applications
-- PlantUML Documentation
-- Professional Git Workflow
-- Semantic Versioning
+- [1. Project Overview](#1-project-overview)
+- [2. Features](#2-features)
+- [3. Architecture](#3-architecture)
+- [4. Project Folder Structure](#4-project-folder-structure)
+- [5. Driver Design Approach](#5-driver-design-approach)
+- [License](#license)
+- [Author](#author)
 
 ---
 
-# Current Driver Support
+## 1. Project Overview
 
-| Peripheral | Status |
-|------------|--------|
-| RCC | ✅ Complete |
-| GPIO | ✅ Complete |
-| EXTI | ✅ Complete |
-| NVIC | ✅ Complete |
-| SysTick | ✅ Complete |
-| USART | ✅ Complete |
-| SPI | ✅ Complete |
-| I2C | ✅ Complete |
-| ADC | ✅ Complete |
+This project is a **bare-metal embedded C++ driver framework** developed for the **STM32F407VG** microcontroller. The objective is to understand and implement low-level peripheral drivers **without relying on STM32 HAL libraries**, working directly against the hardware at the register level.
 
----
+The framework is built around the following principles:
 
-# Planned Driver Support
+- **Direct register-level programming** — every driver interacts with hardware registers directly, giving full control and transparency over peripheral behavior, with no abstraction overhead from vendor libraries.
+- **STM32F407 Reference Manual (RM0090) based implementation** — all driver logic is derived from and validated against the official reference manual, ensuring register-accurate, correct behavior.
+- **C++ object-oriented driver architecture** — peripherals are modeled as C++ classes, using encapsulation and type safety to produce driver code that is modular, predictable, and easy to extend.
+- **Reusable peripheral drivers** — each driver is designed as a self-contained, portable unit that can be dropped into other STM32F4-based projects with minimal changes.
+- **Hardware abstraction layer approach** — a clear boundary is maintained between application logic and hardware-specific details, so application code stays readable and hardware changes stay contained to the driver layer.
 
-- TIM
-- DMA
-- CAN
-- RTC
-- DAC
-- FLASH
-- CRC
-- RNG
-- IWDG
-- WWDG
-- Power Controller
+This project serves both as a production-oriented driver library and as a deep, hands-on study of the STM32F4 architecture.
 
 ---
 
-# Future Driver Enhancements
+## 2. Features
 
-After completing all peripheral drivers, every driver will be upgraded with:
+### Implemented Drivers
 
-- Interrupt Support
-- DMA Support
-- Callback Registration
-- Non-Blocking APIs
-- Timeout APIs
-- Error Handling
-- Driver State Machine
-- Common Callback Framework
+**Core System Drivers**
 
----
+| Driver | Description |
+|---|---|
+| **RCC** | Reset and Clock Control — clock source selection, PLL configuration, peripheral clock gating |
+| **NVIC** | Nested Vectored Interrupt Controller — interrupt enable/priority/vector management |
+| **SysTick** | System timer for blocking delays and time-base generation |
+| **SCB** | System Control Block — core exception and system-level configuration |
 
-# Middleware
+**Peripheral Drivers**
 
-The framework will also include reusable middleware components.
-
-- UART Bootloader
-- UART Command Line Interface
-- Ring Buffer Library
-- Queue Library
-- Event Manager
-- Software Timer Library
-- Cooperative Scheduler
-
----
-
-# JayRTOS
-
-A complete custom RTOS will be developed as part of this project.
-
-Features include:
-
-- Task Scheduler
-- Context Switching
-- PendSV
-- SysTick
-- Task Management
-- Queues
-- Semaphores
-- Mutexes
-- Event Groups
-- Software Timers
-- Memory Management
+| Driver | Description |
+|---|---|
+| **GPIO** | General Purpose Input/Output |
+| **USART** | Universal Synchronous/Asynchronous Receiver Transmitter |
+| **SPI** | Serial Peripheral Interface |
+| **I2C** | Inter-Integrated Circuit |
+| **ADC** | Analog-to-Digital Converter |
+| **TIM** | General-purpose and advanced-control Timers |
+| **DMA** | Direct Memory Access |
+| **CAN** | Controller Area Network |
+| **RTC** | Real-Time Clock |
+| **DAC** | Digital-to-Analog Converter |
+| **FLASH** | Flash memory interface control |
+| **CRC** | Cyclic Redundancy Check |
+| **RNG** | Random Number Generator |
+| **PWR** | Power Control |
 
 ---
 
-# Example Applications
+## 3. Architecture
 
-The repository contains standalone applications demonstrating each peripheral.
-
-Examples include:
-
-- GPIO LED Blink
-- GPIO Interrupt
-- USART Echo
-- SPI Loopback
-- I2C EEPROM
-- ADC Sensor Read
-- PWM Generation
-- Servo Motor Control
-- CAN Communication
-- RTC Clock
-- DAC Wave Generation
-
----
-
-# Real-World Projects
-
-After the framework is completed, complete embedded products will be built using the custom drivers.
-
-Projects include:
-
-- Digital Multimeter
-- Weather Station
-- Data Logger
-- Automotive CAN Dashboard
-- Motor Controller
-- Function Generator
-- Digital Storage Oscilloscope
-- Logic Analyzer
-- Home Automation Controller
-- Smart Sensor Hub
-
-All projects will use:
-
-- Custom Drivers
-- Middleware
-- JayRTOS
-- Interrupts
-- DMA
-
----
-
-# Repository Structure
+The framework follows a **layered architecture** to enforce separation of concerns and keep every layer independently testable and replaceable:
 
 ```
-STM32F407_BAREMETAL_CPP_FRAMEWORK
+Application Layer
+        |
+Middleware Layer
+        |
+Peripheral Driver Layer
+        |
+Core System Layer
+        |
+STM32F407 Registers
+```
+
+| Layer | Responsibility |
+|---|---|
+| **Application Layer** | User/firmware logic built on top of the drivers |
+| **Middleware Layer** | Cross-cutting reusable components (logging, buffering, protocols) |
+| **Peripheral Driver Layer** | Object-oriented drivers for multi-instance peripherals |
+| **Core System Layer** | Static drivers for single-instance system resources |
+| **STM32F407 Registers** | The physical memory-mapped hardware registers |
+
+### Design Rationale
+
+**Core drivers use static APIs**, because the microcontroller exposes only **one instance** of these resources — there is nothing to differentiate between multiple objects, so a static interface avoids unnecessary instantiation overhead.
+
+Examples: `RCC`, `NVIC`, `SysTick`, `SCB`
+
+**Peripheral drivers use object-oriented classes**, because the microcontroller exposes **multiple instances** of these peripherals. Each object binds to one specific hardware instance, allowing independent configuration and operation without instances interfering with one another.
+
+Examples: `GPIOA` / `GPIOB` ..., `USART1` / `USART2` ..., `TIM2` / `TIM3` ..., `ADC1` / `ADC2` ...
+
+---
+
+## 4. Project Folder Structure
+
+```
+STM32F407-BareMetal-CPP
 │
-├── Applications/
+├── Core
+│   ├── Inc                 // Header files for Core System Drivers (RCC, NVIC, SysTick, SCB)
+│   └── Src                 // Source files for Core System Drivers (RCC, NVIC, SysTick, SCB)
+│
+├── Drivers
+│   │
 │   ├── GPIO
-│   ├── USART
-│   ├── SPI
-│   ├── I2C
+│   │   ├── Inc             // GPIO Driver headers
+│   │   └── Src             // GPIO Driver sources
+│   │
 │   ├── ADC
+│   │   ├── Inc             // ADC Driver headers
+│   │   └── Src             // ADC Driver sources
+│   │
 │   ├── TIM
-│   ├── CAN
-│   └── RTOS
+│   │   ├── Inc             // TIM Driver headers
+│   │   └── Src             // TIM Driver sources
+│   │
+│   ├── USART
+│   │   ├── Inc             // USART Driver headers
+│   │   └── Src             // USART Driver sources
+│   │
+│   ├── SPI
+│   │   ├── Inc             // SPI Driver headers
+│   │   └── Src             // SPI Driver sources
+│   │
+│   └── I2C
+│       ├── Inc             // I2C Driver headers
+│       └── Src             // I2C Driver sources
 │
-├── Drivers/
-│   ├── Inc/
-│   └── Src/
+├── Applications             // Example applications and hardware tests
 │
-├── Startup/
+├── Startup                  // Startup files (startup_stm32f407vgtx.s)
 │
-├── CMSIS/
-│
-├── Docs/
-│   ├── Architecture
-│   ├── UML
-│   ├── Sequence
-│   ├── Flowcharts
-│   └── PlantUML
-│
-├── Bootloader/
-│
-├── Middleware/
-│
-├── JayRTOS/
-│
-└── README.md
+└── Docs                     // Documentation, diagrams, and design notes
 ```
 
 ---
 
-# Software Architecture
+## 5. Driver Design Approach
 
-```
-+------------------------------------------------------+
-|                Embedded Applications                 |
-+------------------------------------------------------+
-|                     Middleware                       |
-|  CLI | Ring Buffer | Queue | Event | Timers         |
-+------------------------------------------------------+
-|                      JayRTOS                         |
-| Scheduler | Queue | Mutex | Semaphore | Memory      |
-+------------------------------------------------------+
-|                  Peripheral Drivers                  |
-| RCC | GPIO | USART | SPI | I2C | ADC | TIM | CAN    |
-| RTC | DAC | DMA | FLASH | CRC | RNG | PWR | WDG     |
-+------------------------------------------------------+
-|                 CMSIS Register Layer                 |
-+------------------------------------------------------+
-|             STM32F407VG Cortex-M4 MCU                |
-+------------------------------------------------------+
+The framework applies two distinct C++ design patterns, chosen deliberately based on the hardware topology of each peripheral.
+
+### Static Classes
+
+For drivers representing unique, single-instance hardware components, **static classes** are used. This gives direct access to functionality without instantiating an object, reflecting the peripheral's global, singleton nature on the microcontroller.
+
+**Example: RCC Driver**
+
+```cpp
+RCC::enableGPIOClock(RCC_GPIO::PORTD);
+RCC::enableTIMClock(RCC_TIM::TIM2);
 ```
 
----
+### Object-Oriented Classes
 
-# Driver Architecture
+For drivers controlling peripherals with multiple hardware instances, **object-oriented classes** are used instead. Each object corresponds to one specific hardware instance (e.g. `GPIOA`, `USART1`), allowing every instance to be configured and operated independently of the others.
 
+**Example: GPIO Driver**
+
+```cpp
+GPIO gpioPortA(GPIO_Port::PORTA);
+gpioPortA.pinMode(GPIO_Pin::PIN_0, GPIO_Mode::OUTPUT);
+gpioPortA.digitalWrite(GPIO_Pin::PIN_0, GPIO_State::HIGH);
 ```
-Application
-      │
-      ▼
-Driver API
-      │
-      ▼
-Peripheral Driver
-      │
-      ▼
-Register Access Layer
-      │
-      ▼
-STM32 Hardware
+
+**Example: USART Driver**
+
+```cpp
+USART usart2(USART_Instance::USART2);
+usart2.init(115200);
+usart2.transmit("Hello, STM32!\r\n");
 ```
 
 ---
 
-# Design Goals
+## License
 
-- Learn ARM Cortex-M4 Architecture
-- Understand Peripheral Register Programming
-- Build Reusable Driver Library
-- Learn Embedded C++
-- Learn Interrupt Programming
-- Learn DMA Programming
-- Build a Bootloader
-- Develop a Custom RTOS
-- Build Production-Quality Embedded Applications
+Released under the [MIT License](LICENSE).
 
----
-
-# Development Environment
-
-IDE
-
-- STM32CubeIDE
-- Visual Studio Code
-
-Compiler
-
-- GNU ARM Embedded Toolchain
-
-Debugger
-
-- OpenOCD
-- GDB
-
-Version Control
-
-- Git
-- GitHub
-
-Documentation
-
-- PlantUML
-- Markdown
-- Doxygen
-
----
-
-# Hardware
-
-Target Board
-
-STM32F407VG Discovery
-
-MCU
-
-STM32F407VG
-
-Architecture
-
-ARM Cortex-M4
-
-Clock
-
-168 MHz
-
----
-
-# Coding Guidelines
-
-- Embedded C++14
-- Register-Level Programming
-- Object-Oriented Design
-- Modular Driver Development
-- Consistent Naming Convention
-- Header/Source Separation
-- Reusable APIs
-- Well Documented Code
-
----
-
-# Documentation
-
-The repository contains:
-
-- Driver Documentation
-- Register Maps
-- Architecture Diagrams
-- Flowcharts
-- UML Class Diagrams
-- Sequence Diagrams
-- API Documentation
-- Example Applications
-- Release Notes
-
----
-
-# Version Roadmap
-
-## Version 1.x
-
-Peripheral Driver Development
-
-- RCC
-- GPIO
-- EXTI
-- NVIC
-- SysTick
-- USART
-- SPI
-- I2C
-- ADC
-- TIM
-- DMA
-- CAN
-- RTC
-- DAC
-- FLASH
-- CRC
-- RNG
-- Watchdog
-- Power Control
-
----
-
-## Version 2.x
-
-Driver Enhancements
-
-- Interrupt Support
-- DMA Support
-- Callback Framework
-- Driver State Machine
-- Timeout APIs
-- Non-Blocking APIs
-- Error Handling
-
----
-
-## Version 3.x
-
-Middleware
-
-- UART Bootloader
-- CLI
-- Queue Library
-- Ring Buffer
-- Software Timers
-- Event Manager
-- Cooperative Scheduler
-
----
-
-## Version 4.x
-
-JayRTOS
-
-- Scheduler
-- Context Switching
-- Queues
-- Mutexes
-- Semaphores
-- Event Groups
-- Memory Manager
-
----
-
-## Version 5.x
-
-Embedded Projects
-
-- Digital Multimeter
-- Weather Station
-- Data Logger
-- CAN Dashboard
-- Function Generator
-- DSO
-- Logic Analyzer
-- Home Automation
-- Smart Sensor Hub
-
----
-
-## Version 6.x
-
-Professional Framework
-
-- Complete Documentation
-- Doxygen
-- UML
-- Architecture Diagrams
-- CI/CD
-- Automated Testing
-- Static Analysis
-- Portfolio-Ready Embedded Framework
-
----
-
-# Learning Outcomes
-
-By completing this repository, the following concepts will be covered:
-
-- ARM Cortex-M4 Architecture
-- Embedded C++
-- Register-Level Programming
-- Driver Development
-- Interrupt Programming
-- DMA Programming
-- Bootloader Development
-- RTOS Development
-- Middleware Development
-- Embedded System Design
-- Professional Software Architecture
-- Embedded Debugging
-- Production-Quality Firmware Development
-
----
-
-# License
-
-This project is licensed under the MIT License.
-
----
-
-# Author
+## Author
 
 **Jolapuram Jayavardhan**
-
 Embedded Software Engineer
-
-Bluetooth Developer | Harman International
-
-GitHub: https://github.com/JJAYAVARDAN
+GitHub: [@JJAYAVARDAN](https://github.com/JJAYAVARDAN)

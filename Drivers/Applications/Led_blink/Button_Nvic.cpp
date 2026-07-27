@@ -51,14 +51,13 @@ int main(void)
 
     /**************** SysTick ****************/
 
-    SysTick systick;
-    systick.init(1000);
+    SysTick::init(1000);
 
     while (1)
     {
         /* Interrupt Driven */
 
-        systick.delayMs(100);
+        SysTick::delayMs(100);
     }
 }
 

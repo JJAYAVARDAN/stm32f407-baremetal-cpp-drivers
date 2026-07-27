@@ -42,8 +42,7 @@ int main()
      * Configure SysTick
      **************************************************************/
 
-    SysTick tick;
-    tick.init(1000);
+    SysTick::init(1000);
 
     /**************************************************************
      * Configure SPI1
@@ -86,6 +85,6 @@ int main()
             tx++;
         }
 
-        tick.delayMs(500);
+        SysTick::delayMs(500);
     }
 }

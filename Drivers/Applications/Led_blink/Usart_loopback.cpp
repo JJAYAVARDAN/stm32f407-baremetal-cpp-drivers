@@ -37,8 +37,7 @@ int main()
      * Configure SysTick
      **************************************************************/
 
-    SysTick tick;
-    tick.init(1000);
+    SysTick::init(1000);
 
     /**************************************************************
      * Configure USART2
@@ -65,6 +64,6 @@ int main()
         usart.transmit(rxData);
 
 
-        tick.delayMs(1000);
+        SysTick::delayMs(1000);
     }
 }
