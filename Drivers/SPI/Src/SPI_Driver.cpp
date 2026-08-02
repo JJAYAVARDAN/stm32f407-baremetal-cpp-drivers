@@ -1,9 +1,195 @@
 /*
  * SPI_Driver.cpp
  *
- *  Created on: 19-Jul-2026
- *      Author: jolap
+ * STM32F407 Bare-Metal SPI Driver
+ *
+ * Created on: 19-Jul-2026
+ * Author: jolap
+ *
+ * Purpose:
+ *   Implementation of the STM32F407 SPI driver for master/slave serial data
+ *   exchange, clock configuration, and status monitoring.
+ *
+ * State Machine:
+ *   Idle -> configure -> enable SPI -> wait TXE/RXNE -> transfer -> wait BSY -> idle.
+ *
+ * RM0090 Reference:
+ *   Chapter 28 - Serial peripheral interface (SPI)
  */
+
+ /*********************************************************************
+  *                      SPI Driver Design
+  *
+  * The Serial Peripheral Interface (SPI) is a synchronous serial
+  * communication peripheral used for high-speed, full-duplex data
+  * exchange between the STM32F407 microcontroller and external
+  * devices such as sensors, displays, EEPROMs, Flash memories,
+  * ADCs, DACs, SD cards, and other microcontrollers.
+  *
+  * The STM32F407 provides three SPI peripherals:
+  *
+  *      • SPI1
+  *      • SPI2
+  *      • SPI3
+  *
+  * SPI communication is based on a master-slave architecture where
+  * one device generates the clock signal and controls the data
+  * transfer while one or more slave devices respond to the master's
+  * requests.
+  *
+  * SPI communication requires four signals:
+  *
+  *      • SCK  - Serial Clock
+  *      • MOSI - Master Output Slave Input
+  *      • MISO - Master Input Slave Output
+  *      • NSS  - Slave Select (Chip Select)
+  *
+  * Depending on the application, SPI supports:
+  *
+  *      • Master Mode
+  *      • Slave Mode
+  *      • Full Duplex
+  *      • Half Duplex
+  *      • Simplex Receive
+  *      • Simplex Transmit
+  *
+  * Before communication begins, software configures:
+  *
+  *      • Master/Slave Selection
+  *      • Clock Polarity (CPOL)
+  *      • Clock Phase (CPHA)
+  *      • Baud Rate Prescaler
+  *      • Data Frame Format (8/16-bit)
+  *      • Bit Order (MSB/LSB First)
+  *      • Software/Hardware NSS Management
+  *
+  * During transmission, software writes data into the Data Register
+  * (DR). The SPI shift register serializes the data and transmits it
+  * over the MOSI line while simultaneously receiving data from the
+  * MISO line.
+  *
+  * SPI hardware continuously updates status flags including:
+  *
+  *      • TXE  - Transmit Buffer Empty
+  *      • RXNE - Receive Buffer Not Empty
+  *      • BSY  - SPI Busy
+  *      • OVR  - Overrun
+  *      • MODF - Mode Fault
+  *      • CRCERR - CRC Error
+  *
+  * The SPI driver abstracts register-level communication while
+  * providing an object-oriented interface for synchronous serial
+  * communication.
+  *
+  *********************************************************************
+  *                  Polling Mode State Machine
+  *
+  *              Enable SPI Clock
+  *                      │
+  *                      ▼
+  *             Configure GPIO Pins
+  *                      │
+  *                      ▼
+  *           Configure SPI Settings
+  *                      │
+  *                      ▼
+  *              Enable SPI
+  *                      │
+  *                      ▼
+  *         Application Sends Data
+  *                      │
+  *                      ▼
+  *          Wait Until TXE = 1
+  *                      │
+  *                      ▼
+  *         Write Data Register
+  *                      │
+  *                      ▼
+  *       Hardware Shifts Data Out
+  *                      │
+  *                      ▼
+  *       Hardware Receives Data
+  *                      │
+  *                      ▼
+  *         Wait Until RXNE = 1
+  *                      │
+  *                      ▼
+  *         Read Data Register
+  *                      │
+  *                      ▼
+  *         Wait Until BSY = 0
+  *                      │
+  *                      ▼
+  *        Transaction Complete
+  *
+  *********************************************************************
+  *                Interrupt Mode State Machine
+  *
+  *              Enable SPI Clock
+  *                      │
+  *                      ▼
+  *             Configure GPIO Pins
+  *                      │
+  *                      ▼
+  *           Configure SPI Settings
+  *                      │
+  *                      ▼
+  *       Enable SPI Interrupts
+  *      (TXEIE / RXNEIE / ERRIE)
+  *                      │
+  *                      ▼
+  *        Enable NVIC Interrupt
+  *                      │
+  *                      ▼
+  *              Enable SPI
+  *                      │
+  *                      ▼
+  *       Hardware Detects Event
+  *                      │
+  *                      ▼
+  *         SPI Interrupt Request
+  *                      │
+  *                      ▼
+  *         NVIC Executes ISR
+  *                      │
+  *                      ▼
+  *     Determine Interrupt Source
+  *                      │
+  *      ┌────────┼───────────┐
+  *      ▼        ▼           ▼
+  *    TXE      RXNE        Error
+  *      │        │           │
+  *      ▼        ▼           ▼
+  * Write DR   Read DR   Clear Error
+  *      │        │           │
+  *      └────────┼───────────┘
+  *               ▼
+  *      Continue Communication
+  *
+  *********************************************************************
+  *                  Driver Responsibilities
+  *
+  * • Enable SPI peripheral clock.
+  * • Configure SPI master/slave mode.
+  * • Configure SPI clock polarity.
+  * • Configure SPI clock phase.
+  * • Configure baud rate prescaler.
+  * • Configure data frame size.
+  * • Configure bit transmission order.
+  * • Configure NSS management.
+  * • Enable/Disable SPI peripheral.
+  * • Transmit data (Polling).
+  * • Receive data (Polling).
+  * • Full-duplex transfer.
+  * • Transmit data (Interrupt).
+  * • Receive data (Interrupt).
+  * • Monitor SPI status flags.
+  * • Handle SPI interrupts.
+  *
+  * RM0090 Reference:
+  * Chapter 28 - Serial Peripheral Interface (SPI)
+  *
+  *********************************************************************/
 
  #include "SPI_Driver.h"
 
