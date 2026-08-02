@@ -57,11 +57,9 @@ int main()
 
     while (1)
     {
+        uint8_t txData = usart.receive();
 
-
-
-        uint8_t rxData = usart.receive();
-        usart.transmit(rxData);
+        usart.transmit(txData);
 
 
         SysTick::delayMs(1000);

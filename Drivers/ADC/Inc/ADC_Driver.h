@@ -1,127 +1,77 @@
 /*
  * ADC_Driver.h
  *
- *  Created on: 21-Jul-2026
- *      Author: jolap
+ * STM32F407 Bare-Metal ADC Driver
+ *
+ * Created on: 21-Jul-2026
+ * Author: jolap
+ *
+ * Purpose:
+ *   Register-level driver for the STM32F407 Analog-to-Digital Converter.
+ *   The driver exposes APIs to initialize conversion settings, select
+ *   channels, and start acquisitions.
+ *
+ * RM0090 Reference:
+ *   Chapter 13 - Analog-to-digital converter (ADC)
  */
 
 #ifndef ADC_DRIVER_H_
 #define ADC_DRIVER_H_
-#include<cstdint>
+#include <cstdint>
 #include "RCC_Driver.h"
 
 #define _IO volatile
 
- /*********************************************************************
-  *                      ADC Peripheral Base Addresses
-  *
-  * STM32F407 Reference Manual (RM0090)
-  *
-  * ADC1 : 0x40012000
-  * ADC2 : 0x40012100
-  * ADC3 : 0x40012200
-  *
-  *********************************************************************/
-
+/*********************************************************************
+ * Peripheral Base Addresses
+ *********************************************************************/
 #define ADC1_BASE 0x40012000UL
 #define ADC2_BASE 0x40012100UL
 #define ADC3_BASE 0x40012200UL
 
-  /*********************************************************************
-   *                      ADC Register Definition
-   *
-   * Offset
-   *
-   * 0x00 SR
-   * 0x04 CR1
-   * 0x08 CR2
-   * 0x0C SMPR1
-   * 0x10 SMPR2
-   * 0x14 JOFR1
-   * 0x18 JOFR2
-   * 0x1C JOFR3
-   * 0x20 JOFR4
-   * 0x24 HTR
-   * 0x28 LTR
-   * 0x2C SQR1
-   * 0x30 SQR2
-   * 0x34 SQR3
-   * 0x38 JSQR
-   * 0x3C JDR1
-   * 0x40 JDR2
-   * 0x44 JDR3
-   * 0x48 JDR4
-   * 0x4C DR
-   *
-   *********************************************************************/
-
+/*********************************************************************
+ * Register Definitions
+ *********************************************************************/
 typedef struct
 {
     _IO uint32_t SR;
-
     _IO uint32_t CR1;
-
     _IO uint32_t CR2;
-
     _IO uint32_t SMPR1;
-
     _IO uint32_t SMPR2;
-
     _IO uint32_t JOFR1;
-
     _IO uint32_t JOFR2;
-
     _IO uint32_t JOFR3;
-
     _IO uint32_t JOFR4;
-
     _IO uint32_t HTR;
-
     _IO uint32_t LTR;
-
     _IO uint32_t SQR1;
-
     _IO uint32_t SQR2;
-
     _IO uint32_t SQR3;
-
     _IO uint32_t JSQR;
-
     _IO uint32_t JDR1;
-
     _IO uint32_t JDR2;
-
     _IO uint32_t JDR3;
-
     _IO uint32_t JDR4;
-
     _IO uint32_t DR;
-
 } ADC_RegDef_t;
 
+/*********************************************************************
+ * Register Structure
+ *********************************************************************/
+#define ADC1_REG ((ADC_RegDef_t *)ADC1_BASE)
+#define ADC2_REG ((ADC_RegDef_t *)ADC2_BASE)
+#define ADC3_REG ((ADC_RegDef_t *)ADC3_BASE)
 
 /*********************************************************************
- *                      ADC Peripheral Definitions
+ * Enumerations
  *********************************************************************/
-
-#define ADC1_REG   ((ADC_RegDef_t*)ADC1_BASE)
-#define ADC2_REG   ((ADC_RegDef_t*)ADC2_BASE)
-#define ADC3_REG   ((ADC_RegDef_t*)ADC3_BASE)
-
- /*********************************************************************
-  *                      ADC Instance
-  *********************************************************************/
 enum class ADC_Instance
 {
     ADC1,
     ADC2,
     ADC3
 };
-/*********************************************************************
- *                      ADC Resolution
- *
- * CR1 RES[25:24]
- *********************************************************************/
 
 enum class ADC_Resolution
 {
@@ -130,11 +80,6 @@ enum class ADC_Resolution
     BITS_8,
     BITS_6
 };
-/*********************************************************************
- *                      ADC Data Alignment
- *
- * CR2 ALIGN
- *********************************************************************/
 
 enum class ADC_Alignment
 {
@@ -142,22 +87,15 @@ enum class ADC_Alignment
     LEFT
 };
 
-/*********************************************************************
- *                      ADC Conversion Mode
- *********************************************************************/
 enum class ADC_MODE
 {
     SINGLE,
     CONTINOUS
 };
 
-
-/*********************************************************************
- *                      ADC Channels
- *********************************************************************/
 enum class ADC_Channel
 {
-	CH0 = 0,
+    CH0 = 0,
     CH1,
     CH2,
     CH3,
@@ -176,22 +114,7 @@ enum class ADC_Channel
     CH16,
     CH17,
     CH18
-
 };
-
-/*********************************************************************
- *                      ADC Sample Time
- *
- * SMPRx Register
- *  000: 3 cycles
-    001: 15 cycles
-    010: 28 cycles
-    011: 56 cycles
-    100: 84 cycles
-    101: 112 cycles
-    110: 144 cycles
-    111: 480 cycles
- *********************************************************************/
 
 enum class ADC_SampleTime
 {
@@ -206,56 +129,73 @@ enum class ADC_SampleTime
 };
 
 /*********************************************************************
- *                      ADC Driver Class
- *********************************************************************/ 
-
+ * Driver Class
+ *********************************************************************/
 class ADC
 {
 private:
-    /*
-     * Pointer to ADC peripheral registers
-     */
     ADC_RegDef_t* mADC;
+
 public:
-     /**************************************************************
+    /**************************************************************
      * Constructor
      **************************************************************/
-
     ADC(ADC_Instance instance);
 
     /**************************************************************
-     * Clock Control
+     * Clock APIs
      **************************************************************/
-
+    /**
+     * @brief Enables the clock for the selected ADC peripheral.
+     */
     void enableClock();
 
     /**************************************************************
-     * ADC Initialization
+     * Initialization APIs
      **************************************************************/
-
+    /**
+     * @brief Configures ADC resolution, alignment, and conversion mode.
+     * @param resolution ADC resolution selection.
+     * @param alignment ADC data alignment selection.
+     * @param mode Single or continuous conversion mode.
+     */
     void init(ADC_Resolution resolution,
-        ADC_Alignment alignment,
-        ADC_MODE mode);
+              ADC_Alignment alignment,
+              ADC_MODE mode);
 
     /**************************************************************
-     * ADC Peripheral Control
+     * Control APIs
      **************************************************************/
-
+    /**
+     * @brief Enables the ADC peripheral.
+     */
     void enable();
 
+    /**
+     * @brief Disables the ADC peripheral.
+     */
     void disable();
 
-    /**************************************************************
-     * ADC Peripheral Control
-     **************************************************************/
+    /**
+     * @brief Selects the active conversion channel.
+     * @param channel ADC input channel identifier.
+     */
     void selectChannel(ADC_Channel channel);
 
+    /**
+     * @brief Sets the sample time for a selected channel.
+     * @param channel ADC input channel identifier.
+     * @param sampletime Sample time value in ADC cycles.
+     */
     void setSampleTime(ADC_Channel channel,
-        ADC_SampleTime sampletime);
+                       ADC_SampleTime sampletime);
 
     /**************************************************************
-     * Conversion Control
+     * Conversion APIs
      **************************************************************/
+    /**
+     * @brief Starts a conversion sequence on the selected channel.
+     */
     void startConversion();
 
     bool conversionComplete();
